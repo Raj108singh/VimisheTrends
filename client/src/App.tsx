@@ -13,6 +13,8 @@ import Cart from "@/pages/cart";
 import Checkout from "@/pages/checkout";
 import Profile from "@/pages/profile";
 import Admin from "@/pages/admin";
+import AdminLogin from "@/pages/admin-login";
+import AdminDashboard from "@/pages/admin-dashboard";
 import Login from "@/pages/login";
 import Register from "@/pages/register";
 
@@ -34,6 +36,7 @@ function Router() {
         <>
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
+          <Route path="/admin/login" component={AdminLogin} />
           <Route path="/" component={Landing} />
           <Route component={Login} />
         </>
@@ -46,6 +49,8 @@ function Router() {
           <Route path="/checkout" component={Checkout} />
           <Route path="/profile" component={Profile} />
           <Route path="/admin" component={Admin} />
+          <Route path="/admin/dashboard" component={AdminDashboard} />
+          <Route path="/admin/login" component={AdminLogin} />
           <Route path="/login" component={Home} />
           <Route path="/register" component={Home} />
           <Route component={NotFound} />

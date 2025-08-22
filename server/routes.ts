@@ -104,6 +104,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/auth/admin-login", async (req, res) => {
+    try {
+      const { email, password } = loginSchema.parse(req.body);
+      
+      // Get user by email
+      const user = await storage.getUserByEmail(email);
+      if (!user || !user.password || !user.isAdmin) {
+        return res.status(401).json({ message: "Invalid admin credentials" });
+      }
+
+      // Verify password
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword) {
+        return res.status(401).json({ message: "Invalid admin credentials" });
+      }
+
+      // Set session
+      req.login({ id: user.id, email: user.email, isAdmin: true }, (err) => {
+        if (err) {
+          console.error("Admin login error:", err);
+          return res.status(500).json({ message: "Failed to login" });
+        }
+        res.json({ message: "Admin login successful", user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, isAdmin: user.isAdmin } });
+      });
+    } catch (error) {
+      console.error("Admin login error:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid input data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to login" });
+    }
+  });
+
   app.post("/api/auth/logout", (req, res) => {
     req.logout((err) => {
       if (err) {
@@ -399,7 +432,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/orders", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims ? req.user.claims.sub : req.user.id;
-      const orders = await storage.getOrdersByUserId(userId);
+      
+      // If admin, get all orders; otherwise get user's orders
+      let orders;
+      if (req.user.isAdmin) {
+        orders = await storage.getAllOrders();
+      } else {
+        orders = await storage.getOrdersByUserId(userId);
+      }
+      
       res.json(orders);
     } catch (error) {
       console.error("Error fetching orders:", error);
