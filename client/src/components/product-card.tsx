@@ -150,50 +150,43 @@ export default function ProductCard({ product, showLogin }: ProductCardProps) {
 
   return (
     <>
-      <div className="product-card bg-white rounded-xl shadow-md overflow-hidden group cursor-pointer" data-testid={`product-card-${product.id}`}>
+      <div className="product-card bg-white rounded-lg overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-300" data-testid={`product-card-${product.id}`}>
         <Link href={`/products/${product.slug}`}>
           <div className="relative">
             <img 
               src={product.imageUrl || "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400"} 
               alt={product.name}
-              className="w-full h-64 object-cover transition-transform duration-300"
+              className="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-300"
               data-testid={`img-product-${product.id}`}
             />
             
-            {/* Badges */}
-            <div className="absolute top-4 left-4 space-y-2">
-              {product.isOnSale && discountPercent > 0 && (
-                <Badge variant="destructive" data-testid={`badge-sale-${product.id}`}>
-                  {discountPercent}% OFF
-                </Badge>
-              )}
-              {product.isFeatured && (
-                <Badge className="bg-accent text-white" data-testid={`badge-featured-${product.id}`}>
-                  FEATURED
-                </Badge>
-              )}
+            {/* Rating Badge */}
+            <div className="absolute top-3 left-3">
+              <span className="bg-white px-2 py-1 rounded text-xs font-bold shadow-md">
+                {product.rating || "4.5"} ★
+              </span>
             </div>
             
-            {/* Action Buttons */}
-            <div className="absolute top-4 right-4 space-y-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            {/* Sale Badge */}
+            {product.isOnSale && discountPercent > 0 && (
+              <div className="absolute top-3 right-3">
+                <span className="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold" data-testid={`badge-sale-${product.id}`}>
+                  {discountPercent}% OFF
+                </span>
+              </div>
+            )}
+            
+            {/* Wishlist Button */}
+            <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
               <Button
                 size="sm"
                 variant="secondary"
-                className="p-2 bg-white shadow-md hover:shadow-lg"
+                className="p-2 bg-white shadow-md hover:shadow-lg rounded-full"
                 onClick={handleAddToWishlist}
                 disabled={addToWishlistMutation.isPending}
                 data-testid={`button-wishlist-${product.id}`}
               >
-                <i className="fas fa-heart text-gray-600"></i>
-              </Button>
-              <Button
-                size="sm"
-                variant="secondary"
-                className="p-2 bg-white shadow-md hover:shadow-lg"
-                onClick={handleQuickView}
-                data-testid={`button-quick-view-${product.id}`}
-              >
-                <i className="fas fa-eye text-gray-600"></i>
+                <i className="fas fa-heart text-gray-600 hover:text-red-500 transition-colors"></i>
               </Button>
             </div>
           </div>
@@ -201,56 +194,49 @@ export default function ProductCard({ product, showLogin }: ProductCardProps) {
 
         <div className="p-4">
           <Link href={`/products/${product.slug}`}>
-            <h3 className="font-semibold text-gray-800 mb-2 hover:text-primary transition-colors" data-testid={`text-product-name-${product.id}`}>
+            <h3 className="font-medium text-gray-800 mb-1 text-sm line-clamp-2 hover:text-primary transition-colors" data-testid={`text-product-name-${product.id}`}>
               {product.name}
             </h3>
           </Link>
           
-          {/* Rating */}
-          {product.rating && parseFloat(product.rating) > 0 && (
-            <div className="flex items-center mb-2">
-              <div className="star-rating">
-                {Array.from({ length: 5 }, (_, i) => (
-                  <i key={i} className={`${i < Math.floor(parseFloat(product.rating || "0")) ? "fas" : "far"} fa-star`}></i>
-                ))}
-              </div>
-              <span className="text-gray-500 text-sm ml-2" data-testid={`text-review-count-${product.id}`}>
-                ({product.reviewCount || 0} reviews)
-              </span>
-            </div>
-          )}
+          {/* Brand or Category */}
+          <p className="text-gray-500 text-xs mb-2">Bewakoof®</p>
 
-          {/* Price and Actions */}
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="text-xl font-bold text-primary" data-testid={`text-price-${product.id}`}>
-                ₹{displayPrice}
-              </span>
-              {originalPrice && (
-                <span className="text-gray-500 line-through ml-2" data-testid={`text-original-price-${product.id}`}>
+          {/* Price */}
+          <div className="flex items-center space-x-2 mb-3">
+            <span className="text-lg font-bold text-gray-900" data-testid={`text-price-${product.id}`}>
+              ₹{displayPrice}
+            </span>
+            {originalPrice && (
+              <>
+                <span className="text-gray-500 line-through text-sm" data-testid={`text-original-price-${product.id}`}>
                   ₹{originalPrice}
                 </span>
-              )}
-            </div>
-            <Button
-              size="sm"
-              onClick={handleAddToCart}
-              disabled={addToCartMutation.isPending}
-              className="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary/90"
-              data-testid={`button-add-to-cart-${product.id}`}
-            >
-              {addToCartMutation.isPending ? "Adding..." : "Add to Cart"}
-            </Button>
+                <span className="text-green-600 text-sm font-medium">
+                  {discountPercent}% OFF
+                </span>
+              </>
+            )}
           </div>
 
           {/* Size Info */}
           {product.sizes && product.sizes.length > 0 && (
-            <div className="mt-3">
+            <div className="mb-3">
               <p className="text-xs text-gray-500" data-testid={`text-sizes-${product.id}`}>
-                Available: {product.sizes.join(", ")}
+                {product.sizes.slice(0, 3).join(", ")}...
               </p>
             </div>
           )}
+
+          {/* Add to Cart Button */}
+          <Button
+            onClick={handleAddToCart}
+            disabled={addToCartMutation.isPending}
+            className="w-full bg-black text-white py-2 rounded text-sm font-medium hover:bg-gray-800 transition-colors"
+            data-testid={`button-add-to-cart-${product.id}`}
+          >
+            {addToCartMutation.isPending ? "ADDING..." : "ADD TO CART"}
+          </Button>
         </div>
       </div>
 

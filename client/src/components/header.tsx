@@ -37,15 +37,11 @@ export default function Header() {
 
   return (
     <>
-      {/* Top Notification Bar */}
-      <div className="notification-bar text-white py-2 text-center text-sm font-medium">
-        🎉 Free Shipping on Orders Above ₹1000 | 10% Off on First Order - Use Code: WELCOME10
-      </div>
 
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between py-3">
+          <div className="flex items-center justify-between py-4">
             {/* Mobile Menu Button */}
             <button 
               className="lg:hidden text-gray-600"
@@ -56,63 +52,37 @@ export default function Header() {
             </button>
 
             {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2" data-testid="link-home">
-              <div className="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-lg">V</span>
-              </div>
-              <h1 className="text-xl font-bold text-gray-800">Vimishe Fashion Trends</h1>
+            <Link href="/" className="flex items-center space-x-3" data-testid="link-home">
+              <img 
+                src="https://vimishefashiontrends.com/wp-content/uploads/2025/07/WhatsApp-Image-2025-07-02-at-01.02.48_f7a00154.jpg" 
+                alt="Vimishe Fashion Trends" 
+                className="h-12 w-auto object-contain"
+              />
             </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-8">
               <Link 
                 href="/" 
-                className={`text-gray-600 hover:text-primary font-medium transition-colors ${location === '/' ? 'text-primary' : ''}`}
-                data-testid="link-home-nav"
+                className="text-gray-800 hover:text-black font-semibold transition-colors uppercase text-sm tracking-wide"
+                data-testid="link-men"
               >
-                Home
+                MEN
               </Link>
-              <div className="relative group">
-                <Link 
-                  href="/products" 
-                  className={`text-gray-600 hover:text-primary font-medium transition-colors flex items-center ${location.startsWith('/products') ? 'text-primary' : ''}`}
-                  data-testid="link-products"
-                >
-                  Products <i className="fas fa-chevron-down ml-1 text-xs"></i>
-                </Link>
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                  {categories.map((category) => (
-                    <Link
-                      key={category.id}
-                      href={`/products?categoryId=${category.id}`}
-                      className="block px-4 py-3 text-gray-700 hover:bg-gray-50"
-                      data-testid={`link-category-${category.slug}`}
-                    >
-                      {category.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-              {isAuthenticated && (
-                <>
-                  <Link 
-                    href="/profile" 
-                    className={`text-gray-600 hover:text-primary font-medium transition-colors ${location === '/profile' ? 'text-primary' : ''}`}
-                    data-testid="link-profile"
-                  >
-                    Profile
-                  </Link>
-                  {user?.isAdmin && (
-                    <Link 
-                      href="/admin" 
-                      className={`text-gray-600 hover:text-primary font-medium transition-colors ${location === '/admin' ? 'text-primary' : ''}`}
-                      data-testid="link-admin"
-                    >
-                      Admin
-                    </Link>
-                  )}
-                </>
-              )}
+              <Link 
+                href="/products" 
+                className="text-gray-800 hover:text-black font-semibold transition-colors uppercase text-sm tracking-wide"
+                data-testid="link-women"
+              >
+                WOMEN
+              </Link>
+              <Link 
+                href="/products" 
+                className="text-gray-800 hover:text-black font-semibold transition-colors uppercase text-sm tracking-wide"
+                data-testid="link-mobile-covers"
+              >
+                MOBILE COVERS
+              </Link>
             </nav>
 
             {/* Header Actions */}
@@ -123,65 +93,80 @@ export default function Header() {
                   <div className="relative">
                     <Input
                       type="text"
-                      placeholder="Search products..."
+                      placeholder="Search by products"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                      className="pl-4 pr-10 py-2 border border-gray-300 rounded focus:ring-1 focus:ring-gray-400 focus:border-gray-400 outline-none w-72 text-sm bg-gray-50"
                       data-testid="input-search"
                     />
-                    <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <i className="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                   </div>
                 </form>
               )}
               
-              {/* Account */}
-              {isAuthenticated ? (
-                <div className="relative group">
-                  <button className="text-gray-600 hover:text-primary transition-colors" data-testid="button-account">
-                    <i className="fas fa-user text-xl"></i>
-                  </button>
-                  <div className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <Link href="/profile" className="block px-4 py-3 text-gray-700 hover:bg-gray-50" data-testid="link-profile-dropdown">
-                      My Profile
-                    </Link>
-                    <Link href="/profile?tab=orders" className="block px-4 py-3 text-gray-700 hover:bg-gray-50" data-testid="link-orders">
-                      My Orders
-                    </Link>
-                    <Link href="/profile?tab=wishlist" className="block px-4 py-3 text-gray-700 hover:bg-gray-50" data-testid="link-wishlist">
-                      Wishlist
-                    </Link>
-                    <button 
-                      onClick={() => window.location.href = "/api/logout"}
-                      className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50"
-                      data-testid="button-logout"
-                    >
-                      Logout
+              {/* Right Side Actions */}
+              <div className="flex items-center space-x-6">
+                {isAuthenticated ? (
+                  <div className="relative group">
+                    <button className="text-sm font-semibold text-gray-800 hover:text-black uppercase tracking-wide" data-testid="button-account">
+                      ACCOUNT
                     </button>
                   </div>
-                </div>
-              ) : (
-                <Button 
-                  onClick={() => window.location.href = "/api/login"}
-                  variant="ghost"
-                  data-testid="button-login"
-                >
-                  Login
-                </Button>
-              )}
-
-              {/* Cart */}
-              <button 
-                className="relative text-gray-600 hover:text-primary transition-colors"
-                onClick={toggleCart}
-                data-testid="button-cart"
-              >
-                <i className="fas fa-shopping-cart text-xl"></i>
-                {cartItemCount > 0 && (
-                  <Badge className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {cartItemCount}
-                  </Badge>
+                ) : (
+                  <button 
+                    onClick={() => window.location.href = "/api/login"}
+                    className="text-sm font-semibold text-gray-800 hover:text-black uppercase tracking-wide"
+                    data-testid="button-login"
+                  >
+                    LOGIN
+                  </button>
                 )}
-              </button>
+                <button className="hover:text-black transition-colors" data-testid="button-wishlist">
+                  <i className="far fa-heart text-gray-700 text-xl"></i>
+                </button>
+                <button 
+                  className="hover:text-black transition-colors relative"
+                  onClick={toggleCart}
+                  data-testid="button-bag"
+                >
+                  <i className="fas fa-shopping-bag text-gray-700 text-xl"></i>
+                  {cartItemCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                      {cartItemCount}
+                    </span>
+                  )}
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        
+        {/* Secondary Navigation */}
+        <div className="bg-gray-50 border-b border-gray-200">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-center space-x-8 py-3">
+              <Link href="/products" className="text-sm font-medium text-gray-700 hover:text-black transition-colors" data-testid="link-shop-now">
+                SHOP NOW
+              </Link>
+              <Link href="/live" className="text-sm font-medium text-gray-700 hover:text-black transition-colors" data-testid="link-live-now">
+                LIVE NOW
+              </Link>
+              <Link href="/plus-size" className="text-sm font-medium text-gray-700 hover:text-black transition-colors" data-testid="link-plus-size">
+                PLUS SIZE
+              </Link>
+              <Link href="/bewakoof-air" className="text-sm font-medium text-gray-700 hover:text-black transition-colors" data-testid="link-bewakoof-air">
+                BWKF X GOOGLE AI
+              </Link>
+              <Link href="/accessories" className="text-sm font-medium text-gray-700 hover:text-black transition-colors" data-testid="link-accessories">
+                ACCESSORIES
+              </Link>
+              <Link href="/official-merch" className="text-sm font-medium text-gray-700 hover:text-black transition-colors" data-testid="link-official-merch">
+                OFFICIAL MERCH
+              </Link>
+              <Link href="/sneakers" className="text-sm font-medium text-gray-700 hover:text-black transition-colors" data-testid="link-sneakers">
+                SNEAKERS
+              </Link>
             </div>
           </div>
         </div>

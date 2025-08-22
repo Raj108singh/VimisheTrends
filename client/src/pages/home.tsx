@@ -58,93 +58,97 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      {/* Hero Section */}
-      <section className="hero-gradient py-20 px-4">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6" data-testid="hero-title">
-            Style Your Little Ones
-          </h2>
-          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto" data-testid="hero-description">
-            Discover premium children's fashion with comfort, quality, and style. From casual everyday wear to special occasion outfits.
-          </p>
-          <div className="space-x-4">
-            <button className="bg-white text-primary font-semibold px-8 py-4 rounded-full hover:shadow-lg transform hover:scale-105 transition-all" data-testid="button-shop-collection">
-              Shop Collection
-            </button>
-            <button className="border-2 border-white text-white font-semibold px-8 py-4 rounded-full hover:bg-white hover:text-primary transition-all" data-testid="button-view-lookbook">
-              View Lookbook
-            </button>
+      {/* Hero Banner */}
+      <section className="bg-gradient-to-r from-yellow-400 to-orange-400 py-8 px-4">
+        <div className="container mx-auto">
+          <div className="flex items-center justify-between bg-white rounded-xl p-6 shadow-lg">
+            <div className="flex items-center space-x-4">
+              <div className="bg-yellow-100 p-3 rounded-full">
+                <span className="text-2xl">🎉</span>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-800" data-testid="hero-title">GET 10% CASHBACK</h2>
+                <p className="text-gray-600" data-testid="hero-subtitle">ON ALL ORDERS</p>
+              </div>
+            </div>
+            <div className="bg-yellow-400 px-6 py-3 rounded-full">
+              <span className="font-bold text-gray-800" data-testid="promo-code">USE CODE: GETCASH10</span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Promotional Banners */}
-      <section className="py-12 px-4">
+      {/* Banner Grid */}
+      <section className="py-8 px-4 bg-white">
         <div className="container mx-auto">
-          <div className="grid md:grid-cols-2 gap-6 mb-12">
-            <div className="relative overflow-hidden rounded-2xl">
-              <img 
-                src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400" 
-                alt="Kids in colorful casual wear" 
-                className="w-full h-64 object-cover"
-                data-testid="img-casual-collection"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center">
-                <div className="text-white p-8">
-                  <h3 className="text-2xl font-bold mb-2" data-testid="text-casual-title">Casual Collection</h3>
-                  <p className="mb-4" data-testid="text-casual-description">Comfortable everyday wear</p>
-                  <button className="bg-primary text-white px-6 py-2 rounded-full font-medium hover:bg-primary/90" data-testid="button-shop-casual">
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* Main Banner */}
+            <div className="md:col-span-2 relative bg-gradient-to-r from-purple-400 to-pink-400 rounded-2xl overflow-hidden h-64">
+              <div className="absolute inset-0 flex items-center justify-between p-8">
+                <div className="text-white">
+                  <h3 className="text-2xl font-bold mb-2" data-testid="text-casual-title">BUY 2</h3>
+                  <p className="text-4xl font-extrabold mb-2" data-testid="text-offer">OVERSIZED T-SHIRTS</p>
+                  <p className="text-2xl font-bold mb-4" data-testid="text-price">AT ₹999</p>
+                  <button className="bg-white text-purple-600 px-6 py-2 rounded-full font-bold hover:shadow-lg transition-all" data-testid="button-shop-casual">
                     Shop Now
                   </button>
+                </div>
+                <div className="hidden md:block">
+                  <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200" alt="T-shirts" className="rounded-lg" />
                 </div>
               </div>
             </div>
             
-            <div className="relative overflow-hidden rounded-2xl">
-              <img 
-                src="https://images.unsplash.com/photo-1519457431-44ccd64a579b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400" 
-                alt="Kids in formal attire" 
-                className="w-full h-64 object-cover"
-                data-testid="img-formal-collection"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center">
-                <div className="text-white p-8">
-                  <h3 className="text-2xl font-bold mb-2" data-testid="text-formal-title">Formal Wear</h3>
-                  <p className="mb-4" data-testid="text-formal-description">Special occasion outfits</p>
-                  <button className="bg-secondary text-white px-6 py-2 rounded-full font-medium hover:bg-secondary/90" data-testid="button-explore-formal">
-                    Explore
-                  </button>
-                </div>
+            {/* Side Banner */}
+            <div className="relative bg-gradient-to-b from-blue-400 to-cyan-400 rounded-2xl overflow-hidden h-64">
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-6 text-center">
+                <h3 className="text-2xl font-bold mb-2" data-testid="text-formal-title">BUY 3</h3>
+                <p className="text-xl font-bold mb-2" data-testid="text-formal-subtitle">CLASSIC FIT T-SHIRTS</p>
+                <p className="text-2xl font-bold mb-4" data-testid="text-formal-price">AT ₹999</p>
+                <button className="bg-white text-blue-600 px-6 py-2 rounded-full font-bold hover:shadow-lg transition-all" data-testid="button-explore-formal">
+                  Explore
+                </button>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Product Categories */}
-      <section className="py-12 px-4 bg-white">
+      {/* New Arrivals Section */}
+      <section className="py-8 px-4 bg-gray-50">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12" data-testid="text-categories-title">Shop by Category</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-2" data-testid="text-categories-title">NEW ARRIVALS</h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {categoriesLoading ? (
-              Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="text-center animate-pulse">
-                  <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200"></div>
-                  <div className="h-4 bg-gray-200 rounded w-24 mx-auto"></div>
+              Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="bg-white rounded-lg overflow-hidden animate-pulse">
+                  <div className="w-full h-64 bg-gray-200"></div>
+                  <div className="p-3">
+                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                  </div>
                 </div>
               ))
             ) : categories.length > 0 ? (
-              categories.slice(0, 4).map((category: any) => (
-                <div key={category.id} className="text-center group cursor-pointer" data-testid={`category-${category.slug}`}>
-                  <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden group-hover:scale-105 transition-transform">
+              categories.slice(0, 5).map((category: any) => (
+                <div key={category.id} className="bg-white rounded-lg overflow-hidden group cursor-pointer hover:shadow-lg transition-all" data-testid={`category-${category.slug}`}>
+                  <div className="relative overflow-hidden">
                     <img 
-                      src={category.imageUrl || "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300"} 
+                      src={category.imageUrl || "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400"} 
                       alt={category.name} 
-                      className="w-full h-full object-cover"
+                      className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                       data-testid={`img-category-${category.slug}`}
                     />
+                    <div className="absolute top-2 left-2">
+                      <span className="bg-yellow-400 text-xs font-bold px-2 py-1 rounded">4.5 ★</span>
+                    </div>
                   </div>
-                  <h3 className="font-semibold text-gray-800" data-testid={`text-category-name-${category.slug}`}>{category.name}</h3>
+                  <div className="p-3">
+                    <h3 className="font-medium text-gray-800 text-sm mb-1" data-testid={`text-category-name-${category.slug}`}>{category.name}</h3>
+                    <p className="text-gray-500 text-xs">Starting from ₹999</p>
+                  </div>
                 </div>
               ))
             ) : (
@@ -153,37 +157,54 @@ export default function Home() {
               </div>
             )}
           </div>
+          <div className="text-center mt-8">
+            <button className="text-primary font-bold hover:underline" data-testid="button-explore-all">
+              Explore All
+            </button>
+          </div>
         </div>
       </section>
 
-      {/* Sale Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-warning/20 to-primary/20">
+      {/* Trending Categories */}
+      <section className="py-8 px-4 bg-white">
         <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4" data-testid="text-sale-title">Flash Sale - Up to 50% Off!</h2>
-            <p className="text-gray-600" data-testid="text-sale-description">Limited time offer on selected items</p>
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-2" data-testid="text-sale-title">TRENDING CATEGORIES</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
             {saleLoading ? (
-              Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
-                  <div className="w-full h-64 bg-gray-200"></div>
-                  <div className="p-4">
-                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-6 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-8 bg-gray-200 rounded"></div>
-                  </div>
+              Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="relative aspect-square rounded-lg overflow-hidden animate-pulse">
+                  <div className="w-full h-full bg-gray-200"></div>
                 </div>
               ))
             ) : saleProducts.length > 0 ? (
-              saleProducts.map((product: any) => (
-                <ProductCard key={product.id} product={product} />
+              saleProducts.slice(0, 6).map((product: any) => (
+                <div key={product.id} className="relative aspect-square rounded-lg overflow-hidden group cursor-pointer">
+                  <img 
+                    src={product.imageUrl || "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300"} 
+                    alt={product.name} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-30 flex items-end p-4">
+                    <h3 className="text-white font-bold text-sm">{product.name || 'Category'}</h3>
+                  </div>
+                </div>
               ))
             ) : (
-              <div className="col-span-full text-center py-12">
-                <p className="text-gray-500 text-lg" data-testid="text-no-sale-products">No sale products available at the moment</p>
-              </div>
+              Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="relative aspect-square rounded-lg overflow-hidden group cursor-pointer">
+                  <img 
+                    src={`https://images.unsplash.com/photo-150345453719${5 + i}?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300`} 
+                    alt="Category" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-30 flex items-end p-4">
+                    <h3 className="text-white font-bold text-sm">Fashion Category</h3>
+                  </div>
+                </div>
+              ))
             )}
           </div>
         </div>
