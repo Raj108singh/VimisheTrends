@@ -8,13 +8,13 @@ import ProductCard from "@/components/product-card";
 import CartSidebar from "@/components/cart-sidebar";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
-import type { Product, Category } from "@shared/schema";
+import type { Product, Category, Slider, SiteSetting } from "@shared/schema";
 
 export default function Home() {
   const { toast } = useToast();
   const { isAuthenticated, isLoading } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const totalSlides = 2;
+  const totalSlides = sliders.length || 1;
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -46,12 +46,26 @@ export default function Home() {
     retry: false,
   });
 
+  const { data: sliders = [], isLoading: slidersLoading } = useQuery<Slider[]>({
+    queryKey: ["/api/sliders", { placement: "home" }],
+    retry: false,
+  });
+
+  const { data: siteSettings = [], isLoading: settingsLoading } = useQuery<SiteSetting[]>({
+    queryKey: ["/api/site-settings", { category: "home" }],
+    retry: false,
+  });
+
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % totalSlides);
+    if (totalSlides > 1) {
+      setCurrentSlide((prev) => (prev + 1) % totalSlides);
+    }
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+    if (totalSlides > 1) {
+      setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+    }
   };
 
   const goToSlide = (index: number) => {
@@ -60,36 +74,12 @@ export default function Home() {
 
   // Auto-play slider
   useEffect(() => {
-    const interval = setInterval(nextSlide, 4000);
-    return () => clearInterval(interval);
-  }, []);
+    if (totalSlides > 1) {
+      const interval = setInterval(nextSlide, 4000);
+      return () => clearInterval(interval);
+    }
+  }, [totalSlides]);
 
-  // Update slide transforms
-  useEffect(() => {
-    const slides = document.querySelectorAll('.slide');
-    slides.forEach((slide, index) => {
-      const slideElement = slide as HTMLElement;
-      if (index === currentSlide) {
-        slideElement.style.transform = 'translateX(0%)';
-      } else if (index < currentSlide) {
-        slideElement.style.transform = 'translateX(-100%)';
-      } else {
-        slideElement.style.transform = 'translateX(100%)';
-      }
-    });
-
-    // Update dots
-    const dots = document.querySelectorAll('.dot');
-    dots.forEach((dot, index) => {
-      if (index === currentSlide) {
-        dot.classList.add('opacity-100');
-        dot.classList.remove('opacity-50');
-      } else {
-        dot.classList.add('opacity-50');
-        dot.classList.remove('opacity-100');
-      }
-    });
-  }, [currentSlide]);
 
   if (isLoading) {
     return (
@@ -106,105 +96,78 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       <Header />
       
-      {/* Full Width 3-Column Slider */}
-      <section className="relative w-full h-[400px] md:h-[500px] overflow-hidden">
-        <div className="slider-container relative w-full h-full">
-          {/* Slide 1: Set A - DENIM, T-SHIRTS, AI */}
-          <div className="slide active absolute inset-0 w-full h-full transition-transform duration-500">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 h-full">
-              {/* Column 1: DENIM VERSE */}
-              <div className="relative overflow-hidden bg-cover bg-center" style={{backgroundImage: 'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url("https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800")'}}>
-                <div className="absolute bottom-6 left-6 text-white z-20">
-                  <h2 className="text-2xl md:text-3xl font-black mb-1 tracking-wide">DENIM VERSE</h2>
-                  <p className="text-sm md:text-base font-medium">A FIT FOR EVERY YOU</p>
+      {/* Dynamic Sliders */}
+      {sliders.length > 0 && (
+        <section className="relative w-full h-[400px] md:h-[500px] overflow-hidden">
+          <div className="slider-container relative w-full h-full">
+            {sliders.map((slider, index) => (
+              <div 
+                key={slider.id}
+                className={`slide absolute inset-0 w-full h-full transition-transform duration-500 ${
+                  index === currentSlide ? 'translate-x-0' : 
+                  index < currentSlide ? '-translate-x-full' : 'translate-x-full'
+                }`}
+                style={{
+                  backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${slider.imageUrl})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
+              >
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-6">
+                  <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-wide">{slider.title}</h1>
+                  {slider.description && (
+                    <p className="text-lg md:text-xl font-medium mb-6 max-w-2xl">{slider.description}</p>
+                  )}
+                  {slider.linkUrl && slider.buttonText && (
+                    <a 
+                      href={slider.linkUrl}
+                      className="bg-white text-black px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors"
+                      data-testid={`slider-button-${slider.id}`}
+                    >
+                      {slider.buttonText}
+                    </a>
+                  )}
                 </div>
               </div>
-
-              {/* Column 2: BUY 2 OVERSIZED T-SHIRTS */}
-              <div className="relative bg-gradient-to-br from-orange-400 via-red-400 to-red-500">
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-4">
-                  <div className="mb-4">
-                    <img 
-                      src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=120" 
-                      alt="T-shirts" 
-                      className="w-32 md:w-40 h-20 md:h-24 object-cover rounded-lg shadow-lg mx-auto"
+            ))}
+            
+            {/* Slider Controls */}
+            {sliders.length > 1 && (
+              <>
+                <button 
+                  onClick={prevSlide} 
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 transition-all"
+                  data-testid="slider-prev"
+                >
+                  ←
+                </button>
+                <button 
+                  onClick={nextSlide} 
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 transition-all"
+                  data-testid="slider-next"
+                >
+                  →
+                </button>
+                
+                {/* Slider Dots */}
+                <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                  {sliders.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => goToSlide(index)}
+                      className={`w-3 h-3 rounded-full transition-all ${
+                        index === currentSlide ? 'bg-white' : 'bg-white bg-opacity-50'
+                      }`}
+                      data-testid={`slider-dot-${index}`}
                     />
-                  </div>
-                  <h2 className="text-2xl md:text-3xl font-black mb-1">BUY 2</h2>
-                  <h3 className="text-lg md:text-xl font-black mb-2">OVERSIZED T-SHIRTS</h3>
-                  <p className="text-xl md:text-2xl font-black">AT ₹999</p>
+                  ))}
                 </div>
-              </div>
-
-              {/* Column 3: Design Your Tee with GOOGLE AI */}
-              <div className="relative overflow-hidden bg-cover bg-center" style={{backgroundImage: 'linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url("https://images.unsplash.com/photo-1446776877081-d282a0f896e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800")'}}>
-                <div className="absolute top-4 left-4 z-20">
-                  <span className="bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-bold">
-                    BEWAKOOF® x 🌍
-                  </span>
-                </div>
-                <div className="absolute bottom-6 left-6 text-white z-20">
-                  <h2 className="text-xl md:text-2xl font-black mb-1">Design Your Tee with</h2>
-                  <h3 className="text-lg md:text-xl font-black mb-2 text-yellow-400">GOOGLE AI</h3>
-                  <p className="text-xs md:text-sm font-medium">Experience Endless Imagination</p>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
+        </section>
+      )}
 
-          {/* Slide 2: Set B - SUMMER, HOODIES, ACCESSORIES */}
-          <div className="slide absolute inset-0 w-full h-full translate-x-full transition-transform duration-500">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 h-full">
-              {/* Column 1: SUMMER COLLECTION */}
-              <div className="relative overflow-hidden bg-cover bg-center" style={{backgroundImage: 'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url("https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800")'}}>
-                <div className="absolute bottom-6 left-6 text-white z-20">
-                  <h2 className="text-2xl md:text-3xl font-black mb-1 tracking-wide">SUMMER VIBES</h2>
-                  <p className="text-sm md:text-base font-medium">COOL & COMFORTABLE</p>
-                </div>
-              </div>
-
-              {/* Column 2: HOODIES COLLECTION */}
-              <div className="relative bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600">
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-4">
-                  <div className="mb-4">
-                    <img 
-                      src="https://images.unsplash.com/photo-1556821840-3a9fbc2abd3c?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=120" 
-                      alt="Hoodies" 
-                      className="w-32 md:w-40 h-20 md:h-24 object-cover rounded-lg shadow-lg mx-auto"
-                    />
-                  </div>
-                  <h2 className="text-2xl md:text-3xl font-black mb-1">COZY</h2>
-                  <h3 className="text-lg md:text-xl font-black mb-2">HOODIES</h3>
-                  <p className="text-xl md:text-2xl font-black">FROM ₹1299</p>
-                </div>
-              </div>
-
-              {/* Column 3: ACCESSORIES */}
-              <div className="relative overflow-hidden bg-cover bg-center" style={{backgroundImage: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url("https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800")'}}>
-                <div className="absolute bottom-6 left-6 text-white z-20">
-                  <h2 className="text-xl md:text-2xl font-black mb-1">STYLISH</h2>
-                  <h3 className="text-lg md:text-xl font-black mb-2 text-yellow-400">ACCESSORIES</h3>
-                  <p className="text-xs md:text-sm font-medium">Complete Your Look</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Navigation Dots */}
-          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3 z-30">
-            <button onClick={() => goToSlide(0)} className="dot w-3 h-3 rounded-full bg-white opacity-50 hover:opacity-100 transition-opacity"></button>
-            <button onClick={() => goToSlide(1)} className="dot w-3 h-3 rounded-full bg-white opacity-50 hover:opacity-100 transition-opacity"></button>
-          </div>
-
-          {/* Navigation Arrows */}
-          <button onClick={prevSlide} className="prev-arrow absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white p-3 rounded-full hover:bg-opacity-50 transition-all z-30">
-            ←
-          </button>
-          <button onClick={nextSlide} className="next-arrow absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 text-white p-3 rounded-full hover:bg-opacity-50 transition-all z-30">
-            →
-          </button>
-        </div>
-      </section>
 
       {/* Promotional Banner */}
       <section className="py-4 px-4 bg-white">

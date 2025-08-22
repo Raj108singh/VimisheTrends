@@ -1,0 +1,41 @@
+Sure, here’s a comprehensive prompt you can use for integrating the features you've described:
+
+---
+
+**Prompt:**
+
+"Integrate a full-featured eCommerce website with the following functionalities:
+
+1. **Database Integration**: Insert data into all tables of the database and ensure data is stored in a structured format to support the eCommerce website. Implement CRUD operations (Create, Read, Update, Delete) for products, orders, users, and other necessary entities.
+
+2. **Admin Panel Enhancements**:
+
+   * Make the admin sidebar scrollable for better navigation if the content exceeds the viewport.
+   * Allow the admin to modify and update everything related to the frontend, including text, product information, images, pricing, and promotions.
+   * Ensure all changes made in the admin panel are reflected in real-time on the frontend of the website.
+
+3. **Product Placement and Checkout**:
+
+   * Ensure that products are displayed correctly on the website, including product details, images, descriptions, and pricing.
+   * Allow for easy modification of product placement and checkout functionality from the admin panel.
+   * Ensure that product details and the checkout process are visible and functional in the frontend, and allow for seamless customer navigation during the purchasing journey.
+
+4. **SEO Optimization**:
+
+   * Ensure the website is SEO-friendly by implementing proper meta tags, descriptions, alt text for images, and structured data (schema markup).
+   * Implement URL structures that are optimized for search engines (e.g., clean, readable URLs for product pages).
+   * Add features like social sharing buttons and integrate content strategies to improve search engine ranking.
+
+5. **WhatsApp Business API Integration**:
+
+   * Integrate WhatsApp Business API for customer support, sales, and promotions.
+   * Enable automated order notifications via WhatsApp, including order confirmations, shipping updates, and delivery status.
+   * Implement WhatsApp as a channel for customer support, allowing users to send inquiries, track their orders, and receive immediate assistance.
+   * Allow the admin to send promotional offers, discounts, and updates via WhatsApp.
+   * Integrate WhatsApp buttons or widgets throughout the website, enabling customers to initiate a conversation with your business via WhatsApp at any point.
+
+Please ensure the solution includes responsive design, user-friendly interface, and follows best practices for security, scalability, and performance."
+
+---
+
+This prompt should guide the implementation of a comprehensive eCommerce system with the desired functionality.

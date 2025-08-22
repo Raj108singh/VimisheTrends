@@ -315,20 +315,20 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
-      <div className="w-72 bg-white shadow-lg">
-        <div className="p-6 border-b">
+      <div className="w-72 bg-white shadow-lg flex flex-col">
+        <div className="p-6 border-b flex-shrink-0">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-blue-500 rounded-lg flex items-center justify-center">
-              <i className="fas fa-baby text-white"></i>
+              <i className="fas fa-child text-white"></i>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-800">YouGotPlanB</h1>
+              <h1 className="text-xl font-bold text-gray-800">Vimishe Fashion</h1>
               <p className="text-sm text-gray-500">Admin Panel</p>
             </div>
           </div>
         </div>
 
-        <nav className="p-4 space-y-2">
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           <button
             onClick={() => setActiveTab("dashboard")}
             className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
@@ -445,9 +445,74 @@ export default function AdminDashboard() {
             <i className="fas fa-shopping-cart w-5"></i>
             <span>Orders</span>
           </button>
+
+          <button
+            onClick={() => setActiveTab("categories")}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+              activeTab === "categories"
+                ? "bg-pink-50 text-pink-600 border-l-4 border-pink-500"
+                : "text-gray-600 hover:bg-gray-50"
+            }`}
+            data-testid="nav-categories"
+          >
+            <i className="fas fa-list w-5"></i>
+            <span>Categories</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("reviews")}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+              activeTab === "reviews"
+                ? "bg-pink-50 text-pink-600 border-l-4 border-pink-500"
+                : "text-gray-600 hover:bg-gray-50"
+            }`}
+            data-testid="nav-reviews"
+          >
+            <i className="fas fa-star w-5"></i>
+            <span>Reviews</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("seo")}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+              activeTab === "seo"
+                ? "bg-pink-50 text-pink-600 border-l-4 border-pink-500"
+                : "text-gray-600 hover:bg-gray-50"
+            }`}
+            data-testid="nav-seo"
+          >
+            <i className="fas fa-search w-5"></i>
+            <span>SEO Settings</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("whatsapp")}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+              activeTab === "whatsapp"
+                ? "bg-pink-50 text-pink-600 border-l-4 border-pink-500"
+                : "text-gray-600 hover:bg-gray-50"
+            }`}
+            data-testid="nav-whatsapp"
+          >
+            <i className="fab fa-whatsapp w-5"></i>
+            <span>WhatsApp Integration</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("appearance")}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+              activeTab === "appearance"
+                ? "bg-pink-50 text-pink-600 border-l-4 border-pink-500"
+                : "text-gray-600 hover:bg-gray-50"
+            }`}
+            data-testid="nav-appearance"
+          >
+            <i className="fas fa-palette w-5"></i>
+            <span>Appearance</span>
+          </button>
         </nav>
 
-        <div className="absolute bottom-0 w-72 p-4 border-t bg-white">
+        <div className="flex-shrink-0 p-4 border-t bg-white">
           <div className="flex items-center space-x-3 mb-4">
             <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
               <i className="fas fa-user text-gray-600 text-sm"></i>
@@ -483,7 +548,7 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-blue-600">
-                    {customers?.total || 0}
+                    {(customers as any)?.total || 0}
                   </div>
                 </CardContent>
               </Card>
@@ -494,7 +559,7 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-green-600">
-                    {analyticsData?.totalPageViews || 0}
+                    {(analyticsData as any)?.totalPageViews || 0}
                   </div>
                 </CardContent>
               </Card>
@@ -505,7 +570,7 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-yellow-600">
-                    ₹{analyticsData?.totalRevenue?.toFixed(2) || "0.00"}
+                    ₹{(analyticsData as any)?.totalRevenue?.toFixed(2) || "0.00"}
                   </div>
                 </CardContent>
               </Card>
@@ -516,7 +581,7 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-purple-600">
-                    {coupons?.filter((c: any) => c.isActive)?.length || 0}
+                    {(coupons as any[])?.filter((c: any) => c.isActive)?.length || 0}
                   </div>
                 </CardContent>
               </Card>
