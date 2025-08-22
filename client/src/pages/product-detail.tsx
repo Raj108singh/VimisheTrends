@@ -39,9 +39,21 @@ export default function ProductDetail() {
 
   const addToCartMutation = useMutation({
     mutationFn: async (cartData: any) => {
-      await apiRequest("POST", "/api/cart", cartData);
+      const response = await apiRequest("POST", "/api/cart", cartData);
+      return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
+      if (data.requiresLogin) {
+        toast({
+          title: "Login Required",
+          description: data.message,
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/auth";
+        }, 1500);
+        return;
+      }
       queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
       toast({
         title: "Added to Cart",
@@ -49,17 +61,6 @@ export default function ProductDetail() {
       });
     },
     onError: (error: any) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Login Required",
-          description: "Please login to add items to your cart",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/auth";
-        }, 500);
-        return;
-      }
       toast({
         title: "Error",
         description: error?.message || "Failed to add product to cart",

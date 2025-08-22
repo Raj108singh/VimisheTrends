@@ -367,9 +367,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/cart", async (req: any, res) => {
     try {
-      // Require authentication for adding to cart
+      // Allow guest users to get a message to login, but don't block completely
       if (!req.user) {
-        return res.status(401).json({ message: "Please login to add items to cart" });
+        // For now, return a friendly message but don't add to cart
+        return res.status(200).json({ 
+          message: "Please login to add items to your cart",
+          requiresLogin: true 
+        });
       }
       const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       const cartItemData = insertCartItemSchema.parse({

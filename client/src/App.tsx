@@ -35,7 +35,7 @@ function Router() {
   return (
     <Switch>
       {/* Public routes - no authentication required */}
-      <Route path="/" component={isAuthenticated ? Home : Landing} />
+      <Route path="/" component={Home} />
       <Route path="/products" component={Products} />
       <Route path="/products/:slug" component={ProductDetail} />
       <Route path="/auth" component={Login} />
