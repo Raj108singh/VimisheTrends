@@ -350,9 +350,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   };
 
   // Cart routes
-  app.get("/api/cart", requireAuth, async (req: any, res) => {
+  app.get("/api/cart", async (req: any, res) => {
     try {
-      // Handle both OAuth and email/password users
+      // Allow guest cart access with session-based cart
+      if (!req.user) {
+        return res.json([]); // Return empty cart for unauthenticated users
+      }
       const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       const cartItems = await storage.getCartItems(userId);
       res.json(cartItems);
@@ -362,8 +365,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/cart", requireAuth, async (req: any, res) => {
+  app.post("/api/cart", async (req: any, res) => {
     try {
+      // Require authentication for adding to cart
+      if (!req.user) {
+        return res.status(401).json({ message: "Please login to add items to cart" });
+      }
       const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       const cartItemData = insertCartItemSchema.parse({
         ...req.body,
@@ -377,8 +384,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/cart/:id", requireAuth, async (req: any, res) => {
+  app.put("/api/cart/:id", async (req: any, res) => {
     try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Please login to update cart" });
+      }
       const { quantity } = req.body;
       const cartItem = await storage.updateCartItem(req.params.id, quantity);
       res.json(cartItem);
@@ -388,8 +398,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/cart/:id", requireAuth, async (req: any, res) => {
+  app.delete("/api/cart/:id", async (req: any, res) => {
     try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Please login to remove cart items" });
+      }
       await storage.removeFromCart(req.params.id);
       res.status(204).send();
     } catch (error) {
@@ -398,8 +411,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/cart", requireAuth, async (req: any, res) => {
+  app.delete("/api/cart", async (req: any, res) => {
     try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Please login to clear cart" });
+      }
       const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       await storage.clearCart(userId);
       res.status(204).send();

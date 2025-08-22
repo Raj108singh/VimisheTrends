@@ -21,40 +21,36 @@ import Register from "@/pages/register";
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Switch>
-      {isLoading ? (
-        <Route path="*">
-          <div className="min-h-screen flex items-center justify-center">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading...</p>
-            </div>
-          </div>
-        </Route>
-      ) : !isAuthenticated ? (
-        <>
-          <Route path="/login" component={Login} />
-          <Route path="/register" component={Register} />
-          <Route path="/admin/login" component={AdminLogin} />
-          <Route path="/" component={Landing} />
-          <Route component={Login} />
-        </>
-      ) : (
-        <>
-          <Route path="/" component={Home} />
-          <Route path="/products" component={Products} />
-          <Route path="/products/:slug" component={ProductDetail} />
-          <Route path="/cart" component={Cart} />
-          <Route path="/checkout" component={Checkout} />
-          <Route path="/profile" component={Profile} />
-          <Route path="/admin" component={Admin} />
-          <Route path="/admin/login" component={AdminLogin} />
-          <Route path="/login" component={Home} />
-          <Route path="/register" component={Home} />
-          <Route component={NotFound} />
-        </>
-      )}
+      {/* Public routes - no authentication required */}
+      <Route path="/" component={isAuthenticated ? Home : Landing} />
+      <Route path="/products" component={Products} />
+      <Route path="/products/:slug" component={ProductDetail} />
+      <Route path="/auth" component={Login} />
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Route path="/admin/login" component={AdminLogin} />
+      
+      {/* Protected routes - authentication required */}
+      <Route path="/cart" component={Cart} />
+      <Route path="/checkout" component={Checkout} />
+      <Route path="/profile" component={Profile} />
+      <Route path="/admin" component={Admin} />
+      
+      {/* Fallback */}
+      <Route component={NotFound} />
     </Switch>
   );
 }

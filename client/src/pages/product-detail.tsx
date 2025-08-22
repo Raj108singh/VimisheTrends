@@ -48,21 +48,21 @@ export default function ProductDetail() {
         description: "Product has been added to your cart!",
       });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       if (isUnauthorizedError(error)) {
         toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
+          title: "Login Required",
+          description: "Please login to add items to your cart",
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          window.location.href = "/auth";
         }, 500);
         return;
       }
       toast({
         title: "Error",
-        description: "Failed to add product to cart",
+        description: error?.message || "Failed to add product to cart",
         variant: "destructive",
       });
     },

@@ -37,10 +37,15 @@ export default function Checkout() {
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
 
+  // Redirect to auth if not logged in
+  if (!user) {
+    setLocation("/auth");
+    return null;
+  }
+
   const { data: cartItems = [], isLoading } = useQuery({
     queryKey: ["/api/cart"],
     retry: false,
-    enabled: !!user,
   });
 
   const {
