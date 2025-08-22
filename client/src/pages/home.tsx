@@ -14,7 +14,6 @@ export default function Home() {
   const { toast } = useToast();
   const { isAuthenticated, isLoading } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const totalSlides = sliders.length || 1;
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -55,6 +54,8 @@ export default function Home() {
     queryKey: ["/api/site-settings", { category: "home" }],
     retry: false,
   });
+
+  const totalSlides = sliders.length || 1;
 
   const nextSlide = () => {
     if (totalSlides > 1) {
