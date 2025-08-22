@@ -34,12 +34,12 @@ export default function Home() {
   });
 
   const { data: sliders = [], isLoading: slidersLoading } = useQuery<Slider[]>({
-    queryKey: ["/api/sliders", { placement: "home" }],
+    queryKey: ["/api/sliders"],
     retry: false,
   });
 
   const { data: siteSettings = [], isLoading: settingsLoading } = useQuery<SiteSetting[]>({
-    queryKey: ["/api/site-settings", { category: "home" }],
+    queryKey: ["/api/site-settings"],
     retry: false,
   });
 
@@ -85,74 +85,62 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       <Header />
       
-      {/* Dynamic Sliders */}
+      {/* 3-Column Hero Slider Section */}
       {sliders.length > 0 && (
-        <section className="relative w-full h-[400px] md:h-[500px] overflow-hidden">
-          <div className="slider-container relative w-full h-full">
-            {sliders.map((slider, index) => (
-              <div 
+        <section className="relative w-full h-[400px] md:h-[500px]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 h-full">
+            {sliders.slice(0, 3).map((slider, index) => (
+              <div
                 key={slider.id}
-                className={`slide absolute inset-0 w-full h-full transition-transform duration-500 ${
-                  index === currentSlide ? 'translate-x-0' : 
-                  index < currentSlide ? '-translate-x-full' : 'translate-x-full'
+                className={`relative w-full h-full cursor-pointer group ${
+                  index === 0 ? 'bg-gray-900' : 
+                  index === 1 ? 'bg-orange-500' : 
+                  'bg-gray-800'
                 }`}
+                onClick={() => window.location.href = slider.linkUrl || "#"}
                 style={{
-                  backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${slider.imageUrl})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center'
+                  backgroundImage: slider.imageUrl ? `url(${slider.imageUrl})` : 'none',
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                 }}
               >
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-6">
-                  <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-wide">{slider.title}</h1>
-                  {slider.description && (
-                    <p className="text-lg md:text-xl font-medium mb-6 max-w-2xl">{slider.description}</p>
-                  )}
-                  {slider.linkUrl && slider.buttonText && (
-                    <a 
-                      href={slider.linkUrl}
-                      className="bg-white text-black px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors"
-                      data-testid={`slider-button-${slider.id}`}
-                    >
-                      {slider.buttonText}
-                    </a>
-                  )}
+                <div className={`absolute inset-0 ${
+                  index === 0 ? 'bg-gray-900 bg-opacity-80' :
+                  index === 1 ? 'bg-orange-500 bg-opacity-80' :
+                  'bg-gray-800 bg-opacity-80'
+                } group-hover:bg-opacity-70 transition-all duration-300 flex items-center justify-center`}>
+                  <div className="text-center text-white px-4">
+                    <h2 className={`font-bold mb-2 ${
+                      index === 1 ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'
+                    }`} data-testid={`slider-title-${index}`}>
+                      {index === 1 ? 'BUY 2' : slider.title}
+                    </h2>
+                    {index === 1 && (
+                      <h3 className="text-3xl md:text-4xl font-bold mb-2">
+                        OVERSIZED T-SHIRTS
+                      </h3>
+                    )}
+                    <p className={`mb-4 ${
+                      index === 1 ? 'text-xl md:text-2xl font-semibold' : 'text-sm md:text-base'
+                    }`} data-testid={`slider-description-${index}`}>
+                      {slider.description}
+                    </p>
+                    {slider.buttonText && (
+                      <Button 
+                        variant={index === 1 ? "secondary" : "outline"}
+                        className={`${
+                          index === 1 ? 'bg-white text-orange-500 hover:bg-gray-100' : 
+                          'border-white text-white hover:bg-white hover:text-gray-900'
+                        }`}
+                        data-testid={`slider-button-${index}`}
+                      >
+                        {slider.buttonText}
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
-            
-            {/* Slider Controls */}
-            {sliders.length > 1 && (
-              <>
-                <button 
-                  onClick={prevSlide} 
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 transition-all"
-                  data-testid="slider-prev"
-                >
-                  ←
-                </button>
-                <button 
-                  onClick={nextSlide} 
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 transition-all"
-                  data-testid="slider-next"
-                >
-                  →
-                </button>
-                
-                {/* Slider Dots */}
-                <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                  {sliders.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => goToSlide(index)}
-                      className={`w-3 h-3 rounded-full transition-all ${
-                        index === currentSlide ? 'bg-white' : 'bg-white bg-opacity-50'
-                      }`}
-                      data-testid={`slider-dot-${index}`}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
           </div>
         </section>
       )}
