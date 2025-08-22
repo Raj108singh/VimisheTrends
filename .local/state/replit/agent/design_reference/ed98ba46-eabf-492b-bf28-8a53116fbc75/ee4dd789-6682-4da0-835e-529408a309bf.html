@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vimishe Fashion Trends - Premium Children's Clothing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B6B',
+                        secondary: '#4ECDC4',
+                        accent: '#45B7D1',
+                        success: '#96CEB4',
+                        warning: '#FECA57',
+                        muted: '#95A5A6'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+        }
+        .product-card:hover img {
+            transform: scale(1.05);
+        }
+        .floating-cart {
+            position: fixed;
+            top: 50%;
+            right: -300px;
+            transform: translateY(-50%);
+            transition: right 0.3s ease;
+            z-index: 1000;
+        }
+        .floating-cart.open {
+            right: 0;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .star-rating {
+            color: #FECA57;
+        }
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        .notification-bar {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            animation: gradient 3s ease infinite;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50">
+    
+    <!-- Top Notification Bar -->
+    <div class="notification-bar text-white py-2 text-center text-sm font-medium">
+        🎉 Free Shipping on Orders Above ₹1000 | 10% Off on First Order - Use Code: WELCOME10
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <!-- Top Header -->
+            <div class="flex items-center justify-between py-3">
+                <!-- Mobile Menu Button -->
+                <button class="lg:hidden text-gray-600" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">V</span>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-800">Vimishe Fashion Trends</h1>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex items-center space-x-8">
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium transition-colors">Home</a>
+                    <div class="relative group">
+                        <a href="#" class="text-gray-600 hover:text-primary font-medium transition-colors flex items-center">
+                            Categories <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </a>
+                        <div class="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50">Casual Wear</a>
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50">Formal Wear</a>
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50">Accessories</a>
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-gray-50">Baby Collection</a>
+                        </div>
+                    </div>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium transition-colors">About</a>
+                    <a href="#" class="text-gray-600 hover:text-primary font-medium transition-colors">Contact</a>
+                </nav>
+
+                <!-- Header Actions -->
+                <div class="flex items-center space-x-4">
+                    <!-- Search -->
+                    <div class="hidden md:flex items-center">
+                        <div class="relative">
+                            <input type="text" placeholder="Search products..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Account -->
+                    <button class="text-gray-600 hover:text-primary transition-colors">
+                        <i class="fas fa-user text-xl"></i>
+                    </button>
+
+                    <!-- Cart -->
+                    <button class="relative text-gray-600 hover:text-primary transition-colors" onclick="toggleCart()">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu fixed inset-0 bg-white z-40 lg:hidden">
+        <div class="p-4">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-gray-800">Menu</h2>
+                <button onclick="toggleMobileMenu()">
+                    <i class="fas fa-times text-xl text-gray-600"></i>
+                </button>
+            </div>
+            <nav class="space-y-4">
+                <a href="#" class="block text-gray-700 text-lg py-2">Home</a>
+                <a href="#" class="block text-gray-700 text-lg py-2">Casual Wear</a>
+                <a href="#" class="block text-gray-700 text-lg py-2">Formal Wear</a>
+                <a href="#" class="block text-gray-700 text-lg py-2">Accessories</a>
+                <a href="#" class="block text-gray-700 text-lg py-2">Baby Collection</a>
+                <a href="#" class="block text-gray-700 text-lg py-2">About</a>
+                <a href="#" class="block text-gray-700 text-lg py-2">Contact</a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient py-20 px-4">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl md:text-6xl font-bold text-white mb-6">
+                Style Your Little Ones
+            </h2>
+            <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+                Discover premium children's fashion with comfort, quality, and style. From casual everyday wear to special occasion outfits.
+            </p>
+            <div class="space-x-4">
+                <button class="bg-white text-primary font-semibold px-8 py-4 rounded-full hover:shadow-lg transform hover:scale-105 transition-all">
+                    Shop Collection
+                </button>
+                <button class="border-2 border-white text-white font-semibold px-8 py-4 rounded-full hover:bg-white hover:text-primary transition-all">
+                    View Lookbook
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promotional Banners -->
+    <section class="py-12 px-4">
+        <div class="container mx-auto">
+            <div class="grid md:grid-cols-2 gap-6 mb-12">
+                <div class="relative overflow-hidden rounded-2xl">
+                    <!-- Children wearing colorful casual clothing -->
+                    <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400" alt="Kids in colorful casual wear" class="w-full h-64 object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center">
+                        <div class="text-white p-8">
+                            <h3 class="text-2xl font-bold mb-2">Casual Collection</h3>
+                            <p class="mb-4">Comfortable everyday wear</p>
+                            <button class="bg-primary text-white px-6 py-2 rounded-full font-medium hover:bg-primary/90">Shop Now</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative overflow-hidden rounded-2xl">
+                    <!-- Children's formal wear -->
+                    <img src="https://images.unsplash.com/photo-1519457431-44ccd64a579b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400" alt="Kids in formal attire" class="w-full h-64 object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center">
+                        <div class="text-white p-8">
+                            <h3 class="text-2xl font-bold mb-2">Formal Wear</h3>
+                            <p class="mb-4">Special occasion outfits</p>
+                            <button class="bg-secondary text-white px-6 py-2 rounded-full font-medium hover:bg-secondary/90">Explore</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Categories -->
+    <section class="py-12 px-4 bg-white">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold text-center mb-12">Shop by Category</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <!-- Category cards -->
+                <div class="text-center group cursor-pointer">
+                    <!-- Kids fashion clothing sets -->
+                    <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden group-hover:scale-105 transition-transform">
+                        <img src="https://pixabay.com/get/g1ac962f3fcba655724ccdb6830254b83cb8eef978408997f89c88f5c167ddd5ec184b65eb697fd309c8f9aa488517bd9ab11c7c1ac02b76676894b80ba51469a_1280.jpg" alt="Kids clothing sets" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="font-semibold text-gray-800">Clothing Sets</h3>
+                </div>
+                
+                <div class="text-center group cursor-pointer">
+                    <!-- Baby clothing accessories -->
+                    <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden group-hover:scale-105 transition-transform">
+                        <img src="https://images.unsplash.com/photo-1607522370275-f14206abe5d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300" alt="Baby accessories" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="font-semibold text-gray-800">Baby Collection</h3>
+                </div>
+                
+                <div class="text-center group cursor-pointer">
+                    <!-- Children wearing colorful casual clothing -->
+                    <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden group-hover:scale-105 transition-transform">
+                        <img src="https://pixabay.com/get/g5f6abe71e3a9512c1c55b0a983951ece96a90ce85fda6cc6127e04caea3895c44ed3c89e0db297d3219cdd228e7f3922221e033685bc461fc6715ffce72c86a9_1280.jpg" alt="Kids casual wear" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="font-semibold text-gray-800">Casual Wear</h3>
+                </div>
+                
+                <div class="text-center group cursor-pointer">
+                    <!-- Baby clothing accessories -->
+                    <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden group-hover:scale-105 transition-transform">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300" alt="Kids accessories" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="font-semibold text-gray-800">Accessories</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sale Section -->
+    <section class="py-16 px-4 bg-gradient-to-r from-warning/20 to-primary/20">
+        <div class="container mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Flash Sale - Up to 50% Off!</h2>
+                <p class="text-gray-600">Limited time offer on selected items</p>
+            </div>
+            
+            <!-- @MAP: saleProducts.map(product => ( -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Product Card 1 -->
+                <div class="product-card bg-white rounded-xl shadow-md overflow-hidden group cursor-pointer" onclick="openQuickView('product1')">
+                    <div class="relative">
+                        <!-- Children wearing colorful casual clothing -->
+                        <img src="https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400" alt="Colorful kids t-shirt set" class="w-full h-64 object-cover transition-transform duration-300">
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-red-500 text-white px-2 py-1 rounded-full text-sm font-medium">50% OFF</span>
+                        </div>
+                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button class="bg-white p-2 rounded-full shadow-md hover:shadow-lg">
+                                <i class="fas fa-heart text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Rainbow T-Shirt Set</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-gray-500 text-sm ml-2">(24 reviews)</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-xl font-bold text-primary">₹599</span>
+                                <span class="text-gray-500 line-through ml-2">₹1,199</span>
+                            </div>
+                            <button class="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary/90" data-mock="true" data-implementation="Add to cart functionality">
+                                Add to Cart
+                            </button>
+                        </div>
+                        <div class="mt-3">
+                            <p class="text-xs text-gray-500">Available: 3-12 years</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="product-card bg-white rounded-xl shadow-md overflow-hidden group cursor-pointer" onclick="openQuickView('product2')">
+                    <div class="relative">
+                        <!-- Kids fashion clothing sets -->
+                        <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400" alt="Kids denim outfit" class="w-full h-64 object-cover transition-transform duration-300">
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-red-500 text-white px-2 py-1 rounded-full text-sm font-medium">30% OFF</span>
+                        </div>
+                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button class="bg-white p-2 rounded-full shadow-md hover:shadow-lg">
+                                <i class="fas fa-heart text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Denim Explorer Set</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <span class="text-gray-500 text-sm ml-2">(18 reviews)</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-xl font-bold text-primary">₹899</span>
+                                <span class="text-gray-500 line-through ml-2">₹1,299</span>
+                            </div>
+                            <button class="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary/90" data-mock="true">
+                                Add to Cart
+                            </button>
+                        </div>
+                        <div class="mt-3">
+                            <p class="text-xs text-gray-500">Available: 2-10 years</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="product-card bg-white rounded-xl shadow-md overflow-hidden group cursor-pointer" onclick="openQuickView('product3')">
+                    <div class="relative">
+                        <!-- Children's formal wear -->
+                        <img src="https://images.unsplash.com/photo-1545291730-faff8ca1d4b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400" alt="Kids formal dress" class="w-full h-64 object-cover transition-transform duration-300">
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-red-500 text-white px-2 py-1 rounded-full text-sm font-medium">40% OFF</span>
+                        </div>
+                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button class="bg-white p-2 rounded-full shadow-md hover:shadow-lg">
+                                <i class="fas fa-heart text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Princess Party Dress</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-gray-500 text-sm ml-2">(32 reviews)</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-xl font-bold text-primary">₹1,199</span>
+                                <span class="text-gray-500 line-through ml-2">₹1,999</span>
+                            </div>
+                            <button class="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary/90" data-mock="true">
+                                Add to Cart
+                            </button>
+                        </div>
+                        <div class="mt-3">
+                            <p class="text-xs text-gray-500">Available: 1-8 years</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 4 -->
+                <div class="product-card bg-white rounded-xl shadow-md overflow-hidden group cursor-pointer" onclick="openQuickView('product4')">
+                    <div class="relative">
+                        <!-- Baby clothing accessories -->
+                        <img src="https://images.unsplash.com/photo-1607522370275-f14206abe5d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400" alt="Baby romper set" class="w-full h-64 object-cover transition-transform duration-300">
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-red-500 text-white px-2 py-1 rounded-full text-sm font-medium">25% OFF</span>
+                        </div>
+                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button class="bg-white p-2 rounded-full shadow-md hover:shadow-lg">
+                                <i class="fas fa-heart text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Baby Essentials Pack</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-gray-500 text-sm ml-2">(45 reviews)</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-xl font-bold text-primary">₹749</span>
+                                <span class="text-gray-500 line-through ml-2">₹999</span>
+                            </div>
+                            <button class="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary/90" data-mock="true">
+                                Add to Cart
+                            </button>
+                        </div>
+                        <div class="mt-3">
+                            <p class="text-xs text-gray-500">Available: 0-24 months</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_MAP )) -->
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="py-16 px-4 bg-white">
+        <div class="container mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Featured Products</h2>
+                <p class="text-gray-600">Hand-picked favorites for your little ones</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Featured products grid similar to sale section -->
+                <!-- Additional product cards would go here -->
+                <div class="product-card bg-white rounded-xl shadow-md overflow-hidden group cursor-pointer">
+                    <div class="relative">
+                        <!-- Children wearing colorful casual clothing -->
+                        <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400" alt="Kids summer collection" class="w-full h-64 object-cover transition-transform duration-300">
+                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button class="bg-white p-2 rounded-full shadow-md hover:shadow-lg">
+                                <i class="fas fa-heart text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Summer Adventure Set</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <span class="text-gray-500 text-sm ml-2">(28 reviews)</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xl font-bold text-primary">₹799</span>
+                            <button class="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary/90" data-mock="true">
+                                Add to Cart
+                            </button>
+                        </div>
+                        <div class="mt-3">
+                            <p class="text-xs text-gray-500">Available: 2-12 years</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card bg-white rounded-xl shadow-md overflow-hidden group cursor-pointer">
+                    <div class="relative">
+                        <!-- Kids fashion clothing sets -->
+                        <img src="https://pixabay.com/get/g1ac962f3fcba655724ccdb6830254b83cb8eef978408997f89c88f5c167ddd5ec184b65eb697fd309c8f9aa488517bd9ab11c7c1ac02b76676894b80ba51469a_1280.jpg" alt="Kids winter wear" class="w-full h-64 object-cover transition-transform duration-300">
+                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button class="bg-white p-2 rounded-full shadow-md hover:shadow-lg">
+                                <i class="fas fa-heart text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Cozy Winter Bundle</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-gray-500 text-sm ml-2">(15 reviews)</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xl font-bold text-primary">₹1,299</span>
+                            <button class="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary/90" data-mock="true">
+                                Add to Cart
+                            </button>
+                        </div>
+                        <div class="mt-3">
+                            <p class="text-xs text-gray-500">Available: 1-10 years</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card bg-white rounded-xl shadow-md overflow-hidden group cursor-pointer">
+                    <div class="relative">
+                        <!-- Children's formal wear -->
+                        <img src="https://images.unsplash.com/photo-1519457431-44ccd64a579b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400" alt="Kids party outfit" class="w-full h-64 object-cover transition-transform duration-300">
+                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button class="bg-white p-2 rounded-full shadow-md hover:shadow-lg">
+                                <i class="fas fa-heart text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Special Occasion Set</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-gray-500 text-sm ml-2">(41 reviews)</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xl font-bold text-primary">₹1,599</span>
+                            <button class="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary/90" data-mock="true">
+                                Add to Cart
+                            </button>
+                        </div>
+                        <div class="mt-3">
+                            <p class="text-xs text-gray-500">Available: 3-14 years</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card bg-white rounded-xl shadow-md overflow-hidden group cursor-pointer">
+                    <div class="relative">
+                        <!-- Baby clothing accessories -->
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400" alt="Baby accessories bundle" class="w-full h-64 object-cover transition-transform duration-300">
+                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button class="bg-white p-2 rounded-full shadow-md hover:shadow-lg">
+                                <i class="fas fa-heart text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Newborn Starter Kit</h3>
+                        <div class="flex items-center mb-2">
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-gray-500 text-sm ml-2">(67 reviews)</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xl font-bold text-primary">₹999</span>
+                            <button class="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary/90" data-mock="true">
+                                Add to Cart
+                            </button>
+                        </div>
+                        <div class="mt-3">
+                            <p class="text-xs text-gray-500">Available: 0-12 months</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-16 px-4 bg-gray-100">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold text-center mb-12">Happy Parents, Happy Kids</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="star-rating mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 mb-4">"Amazing quality and my daughter loves her new outfits! The fabric is so soft and comfortable."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold">P</div>
+                        <div class="ml-3">
+                            <h4 class="font-semibold">Priya Sharma</h4>
+                            <p class="text-gray-500 text-sm">Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="star-rating mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 mb-4">"Fast delivery and excellent customer service. The sizes are accurate and the colors are vibrant."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-white font-bold">R</div>
+                        <div class="ml-3">
+                            <h4 class="font-semibold">Rajesh Kumar</h4>
+                            <p class="text-gray-500 text-sm">Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="star-rating mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 mb-4">"Bought multiple items for my twin boys. Great value for money and they look adorable!"</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white font-bold">A</div>
+                        <div class="ml-3">
+                            <h4 class="font-semibold">Anita Patel</h4>
+                            <p class="text-gray-500 text-sm">Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12 px-4">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-6">
+                        <div class="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">V</span>
+                        </div>
+                        <h3 class="text-xl font-bold">Vimishe Fashion Trends</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">Premium children's clothing with comfort, style, and quality you can trust.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-primary"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-primary"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-primary"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-primary"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-lg mb-4">Shop</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Casual Wear</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Formal Wear</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Baby Collection</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Accessories</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Sale Items</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-lg mb-4">Customer Care</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Size Guide</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Shipping Info</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Returns</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-lg mb-4">Newsletter</h4>
+                    <p class="text-gray-300 mb-4">Subscribe for updates and exclusive offers</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Your email" class="flex-1 px-4 py-2 rounded-l-full text-gray-800">
+                        <button class="bg-primary px-6 py-2 rounded-r-full hover:bg-primary/90" data-mock="true">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-300">&copy; 2024 Vimishe Fashion Trends. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Cart -->
+    <div class="floating-cart bg-white shadow-2xl rounded-l-2xl w-80">
+        <div class="p-6 border-b">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold">Shopping Cart</h3>
+                <button onclick="toggleCart()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mt-2 text-sm text-gray-600">
+                You are ₹200 away from free shipping!
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                <div class="bg-gradient-to-r from-primary to-secondary h-2 rounded-full" style="width: 80%"></div>
+            </div>
+        </div>
+        
+        <div class="p-6 max-h-96 overflow-y-auto">
+            <!-- Cart Item -->
+            <div class="flex items-center space-x-4 mb-4">
+                <img src="https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" alt="Cart item" class="w-16 h-16 object-cover rounded-lg">
+                <div class="flex-1">
+                    <h4 class="font-medium text-sm">Rainbow T-Shirt Set</h4>
+                    <p class="text-gray-500 text-xs">Size: 4-5 years</p>
+                    <div class="flex items-center justify-between mt-1">
+                        <span class="text-primary font-semibold">₹599</span>
+                        <div class="flex items-center space-x-2">
+                            <button class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs" data-mock="true">-</button>
+                            <span class="text-sm">1</span>
+                            <button class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs" data-mock="true">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-4 mb-4">
+                <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" alt="Cart item" class="w-16 h-16 object-cover rounded-lg">
+                <div class="flex-1">
+                    <h4 class="font-medium text-sm">Denim Explorer Set</h4>
+                    <p class="text-gray-500 text-xs">Size: 6-7 years</p>
+                    <div class="flex items-center justify-between mt-1">
+                        <span class="text-primary font-semibold">₹899</span>
+                        <div class="flex items-center space-x-2">
+                            <button class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs" data-mock="true">-</button>
+                            <span class="text-sm">1</span>
+                            <button class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs" data-mock="true">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-6 border-t">
+            <div class="flex justify-between mb-4">
+                <span class="font-semibold">Total:</span>
+                <span class="font-bold text-xl text-primary">₹1,498</span>
+            </div>
+            <button class="w-full bg-primary text-white py-3 rounded-full font-semibold hover:bg-primary/90 mb-2" data-mock="true" data-implementation="Checkout process">
+                Checkout
+            </button>
+            <button class="w-full border border-gray-300 text-gray-700 py-2 rounded-full font-medium hover:bg-gray-50" data-mock="true">
+                View Cart
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick View Modal -->
+    <div id="quickViewModal" class="modal items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-screen overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Quick View</h2>
+                    <button onclick="closeQuickView()" class="text-gray-500 hover:text-gray-700 text-2xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <!-- Product images would go here -->
+                        <img id="quickViewImage" src="" alt="Product" class="w-full h-96 object-cover rounded-xl mb-4">
+                        <div class="grid grid-cols-4 gap-2">
+                            <!-- Thumbnail images -->
+                            <img src="https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" alt="Thumbnail" class="w-full h-20 object-cover rounded-lg cursor-pointer border-2 border-primary">
+                            <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" alt="Thumbnail" class="w-full h-20 object-cover rounded-lg cursor-pointer">
+                            <img src="https://images.unsplash.com/photo-1545291730-faff8ca1d4b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" alt="Thumbnail" class="w-full h-20 object-cover rounded-lg cursor-pointer">
+                            <img src="https://images.unsplash.com/photo-1607522370275-f14206abe5d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100" alt="Thumbnail" class="w-full h-20 object-cover rounded-lg cursor-pointer">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 id="quickViewTitle" class="text-2xl font-bold mb-4">Rainbow T-Shirt Set</h3>
+                        <div class="flex items-center mb-4">
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-gray-500 ml-2">(24 reviews)</span>
+                        </div>
+                        <div class="mb-6">
+                            <span class="text-3xl font-bold text-primary">₹599</span>
+                            <span class="text-gray-500 line-through ml-2 text-xl">₹1,199</span>
+                            <span class="bg-red-500 text-white px-2 py-1 rounded-full text-sm ml-2">50% OFF</span>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-semibold mb-2">Select Size/Age:</h4>
+                            <div class="flex space-x-2">
+                                <button class="border-2 border-primary bg-primary text-white px-4 py-2 rounded-lg">3-4 yrs</button>
+                                <button class="border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-primary">5-6 yrs</button>
+                                <button class="border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-primary">7-8 yrs</button>
+                                <button class="border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-primary">9-10 yrs</button>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-semibold mb-2">Quantity:</h4>
+                            <div class="flex items-center space-x-3">
+                                <button class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center" data-mock="true">-</button>
+                                <span class="text-lg font-medium">1</span>
+                                <button class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center" data-mock="true">+</button>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3 mb-6">
+                            <button class="w-full bg-primary text-white py-4 rounded-full font-semibold text-lg hover:bg-primary/90" data-mock="true">
+                                Add to Cart
+                            </button>
+                            <button class="w-full border border-gray-300 text-gray-700 py-3 rounded-full font-medium hover:bg-gray-50" data-mock="true">
+                                Add to Wishlist
+                            </button>
+                        </div>
+                        
+                        <div class="text-sm text-gray-600">
+                            <p><i class="fas fa-truck mr-2"></i>Free shipping on orders above ₹1000</p>
+                            <p><i class="fas fa-undo mr-2"></i>30-day return policy</p>
+                            <p><i class="fas fa-shield-alt mr-2"></i>Quality guaranteed</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // TODO: Implement real business logic, API calls, and state management
+        
+        (function() {
+            // Mobile menu toggle
+            window.toggleMobileMenu = function() {
+                const mobileMenu = document.querySelector('.mobile-menu');
+                mobileMenu.classList.toggle('open');
+            };
+
+            // Cart toggle
+            window.toggleCart = function() {
+                const cart = document.querySelector('.floating-cart');
+                cart.classList.toggle('open');
+            };
+
+            // Quick view functionality
+            window.openQuickView = function(productId) {
+                const modal = document.getElementById('quickViewModal');
+                modal.classList.add('active');
+                
+                // TODO: Load actual product data based on productId
+                const productData = {
+                    'product1': {
+                        title: 'Rainbow T-Shirt Set',
+                        image: 'https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=600'
+                    },
+                    'product2': {
+                        title: 'Denim Explorer Set',
+                        image: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=600'
+                    },
+                    'product3': {
+                        title: 'Princess Party Dress',
+                        image: 'https://images.unsplash.com/photo-1545291730-faff8ca1d4b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=600'
+                    },
+                    'product4': {
+                        title: 'Baby Essentials Pack',
+                        image: 'https://images.unsplash.com/photo-1607522370275-f14206abe5d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=600'
+                    }
+                };
+                
+                const product = productData[productId];
+                if (product) {
+                    document.getElementById('quickViewTitle').textContent = product.title;
+                    document.getElementById('quickViewImage').src = product.image;
+                }
+            };
+
+            window.closeQuickView = function() {
+                const modal = document.getElementById('quickViewModal');
+                modal.classList.remove('active');
+            };
+
+            // Close modal when clicking outside
+            document.getElementById('quickViewModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeQuickView();
+                }
+            });
+
+            // Close cart when clicking outside
+            document.addEventListener('click', function(e) {
+                const cart = document.querySelector('.floating-cart');
+                const cartButton = document.querySelector('[onclick="toggleCart()"]');
+                
+                if (!cart.contains(e.target) && e.target !== cartButton && !cartButton.contains(e.target)) {
+                    cart.classList.remove('open');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
