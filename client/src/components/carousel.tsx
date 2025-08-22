@@ -19,10 +19,10 @@ const slides: CarouselSlide[] = [
     title: "BUY 2",
     subtitle: "OVERSIZED T-SHIRTS",
     description: "AT ₹999",
-    buttonText: "Shop Now",
+    buttonText: "",
     buttonLink: "/products",
-    backgroundImage: "/api/placeholder/800/400",
-    backgroundColor: "from-purple-400 to-pink-400",
+    backgroundImage: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
+    backgroundColor: "bg-gradient-to-r from-orange-400 to-pink-500",
     textColor: "text-white"
   },
   {
@@ -30,10 +30,10 @@ const slides: CarouselSlide[] = [
     title: "Design Your Tee With",
     subtitle: "GOOGLE AI",
     description: "Experience Endless Imagination",
-    buttonText: "Try Now",
+    buttonText: "",
     buttonLink: "/ai-design",
-    backgroundImage: "/api/placeholder/800/400",
-    backgroundColor: "from-blue-500 to-cyan-400",
+    backgroundImage: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
+    backgroundColor: "bg-gradient-to-r from-blue-400 to-purple-600",
     textColor: "text-white"
   },
   {
@@ -41,10 +41,10 @@ const slides: CarouselSlide[] = [
     title: "BUY 3",
     subtitle: "CLASSIC FIT T-SHIRTS", 
     description: "AT ₹999",
-    buttonText: "Explore",
+    buttonText: "",
     buttonLink: "/products",
-    backgroundImage: "/api/placeholder/800/400",
-    backgroundColor: "from-green-400 to-blue-500",
+    backgroundImage: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
+    backgroundColor: "bg-gradient-to-r from-pink-400 to-red-500",
     textColor: "text-white"
   }
 ];
@@ -76,42 +76,39 @@ export default function Carousel() {
   };
 
   return (
-    <div className="relative w-full h-80 md:h-96 overflow-hidden rounded-2xl bg-gray-100">
+    <div className="relative w-full h-64 md:h-80 overflow-hidden rounded-lg">
       {/* Slides */}
       <div 
-        className="flex transition-transform duration-500 ease-in-out h-full"
+        className="flex transition-transform duration-300 ease-in-out h-full"
         style={{ transform: `translateX(-${currentSlide * 100}%)` }}
       >
         {slides.map((slide) => (
           <div
             key={slide.id}
-            className={`min-w-full h-full bg-gradient-to-r ${slide.backgroundColor} flex items-center justify-between px-8 md:px-16`}
+            className={`min-w-full h-full ${slide.backgroundColor} relative cursor-pointer`}
+            onClick={() => window.location.href = slide.buttonLink}
           >
-            <div className={`${slide.textColor} max-w-md`}>
-              <h2 className="text-3xl md:text-5xl font-bold mb-2">
-                {slide.title}
-              </h2>
-              {slide.subtitle && (
-                <h3 className="text-2xl md:text-4xl font-bold mb-4">
-                  {slide.subtitle}
-                </h3>
-              )}
-              <p className="text-xl md:text-2xl font-bold mb-6">
-                {slide.description}
-              </p>
-              <Button
-                className="bg-white text-gray-800 hover:bg-gray-100 font-bold px-8 py-3 rounded-full text-lg"
-                onClick={() => window.location.href = slide.buttonLink}
-              >
-                {slide.buttonText}
-              </Button>
-            </div>
-            <div className="hidden md:block">
-              <img 
-                src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300" 
-                alt="Product showcase"
-                className="rounded-xl shadow-xl"
-              />
+            <div className="absolute inset-0 flex items-center justify-between px-8 md:px-16">
+              <div className={`${slide.textColor} z-10`}>
+                <h2 className="text-2xl md:text-4xl font-black mb-1">
+                  {slide.title}
+                </h2>
+                {slide.subtitle && (
+                  <h3 className="text-xl md:text-3xl font-black mb-2">
+                    {slide.subtitle}
+                  </h3>
+                )}
+                <p className="text-lg md:text-2xl font-bold">
+                  {slide.description}
+                </p>
+              </div>
+              <div className="hidden md:block relative z-10">
+                <img 
+                  src={slide.backgroundImage}
+                  alt="Product showcase"
+                  className="w-48 h-32 md:w-64 md:h-40 object-cover rounded-lg"
+                />
+              </div>
             </div>
           </div>
         ))}
@@ -120,44 +117,35 @@ export default function Carousel() {
       {/* Navigation Arrows */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 p-2 rounded-full shadow-lg transition-all"
+        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-90 p-1.5 rounded-full transition-all z-20"
         data-testid="carousel-prev"
       >
-        <i className="fas fa-chevron-left text-gray-700"></i>
+        <i className="fas fa-chevron-left text-gray-800 text-sm"></i>
       </button>
       
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 p-2 rounded-full shadow-lg transition-all"
+        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-90 p-1.5 rounded-full transition-all z-20"
         data-testid="carousel-next"
       >
-        <i className="fas fa-chevron-right text-gray-700"></i>
+        <i className="fas fa-chevron-right text-gray-800 text-sm"></i>
       </button>
 
       {/* Dots Indicator */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+      <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-1.5">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all ${
+            className={`w-2 h-2 rounded-full transition-all ${
               currentSlide === index
-                ? "bg-white scale-110"
-                : "bg-white bg-opacity-50 hover:bg-opacity-75"
+                ? "bg-white"
+                : "bg-white bg-opacity-40 hover:bg-opacity-70"
             }`}
             data-testid={`carousel-dot-${index}`}
           />
         ))}
       </div>
-
-      {/* Auto-play Toggle */}
-      <button
-        onClick={() => setIsPlaying(!isPlaying)}
-        className="absolute top-4 right-4 bg-white bg-opacity-80 hover:bg-opacity-100 p-2 rounded-full shadow-lg transition-all"
-        data-testid="carousel-play-pause"
-      >
-        <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play'} text-gray-700`}></i>
-      </button>
     </div>
   );
 }
