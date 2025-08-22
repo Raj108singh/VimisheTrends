@@ -7,6 +7,12 @@ import {
   reviews,
   cartItems,
   wishlistItems,
+  siteSettings,
+  sliders,
+  coupons,
+  couponUsage,
+  paymentSettings,
+  analyticsEvents,
   type User,
   type UpsertUser,
   type Category,
@@ -23,6 +29,18 @@ import {
   type InsertCartItem,
   type WishlistItem,
   type InsertWishlistItem,
+  type SiteSetting,
+  type InsertSiteSetting,
+  type Slider,
+  type InsertSlider,
+  type Coupon,
+  type InsertCoupon,
+  type CouponUsage,
+  type InsertCouponUsage,
+  type PaymentSetting,
+  type InsertPaymentSetting,
+  type AnalyticsEvent,
+  type InsertAnalyticsEvent,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, like, and, or, sql, inArray } from "drizzle-orm";
@@ -85,6 +103,71 @@ export interface IStorage {
   getWishlistItems(userId: string): Promise<WishlistItem[]>;
   addToWishlist(wishlistItem: InsertWishlistItem): Promise<WishlistItem>;
   removeFromWishlist(id: string): Promise<void>;
+
+  // Admin: Site Settings operations
+  getSiteSettings(category?: string): Promise<SiteSetting[]>;
+  getSiteSetting(key: string): Promise<SiteSetting | undefined>;
+  upsertSiteSetting(setting: InsertSiteSetting): Promise<SiteSetting>;
+  deleteSiteSetting(id: string): Promise<void>;
+
+  // Admin: Slider/Banner operations
+  getAllSliders(type?: string, placement?: string): Promise<Slider[]>;
+  getSliderById(id: string): Promise<Slider | undefined>;
+  createSlider(slider: InsertSlider): Promise<Slider>;
+  updateSlider(id: string, slider: Partial<InsertSlider>): Promise<Slider>;
+  deleteSlider(id: string): Promise<void>;
+  getActiveSliders(placement?: string): Promise<Slider[]>;
+
+  // Admin: Coupon operations
+  getAllCoupons(): Promise<Coupon[]>;
+  getCouponById(id: string): Promise<Coupon | undefined>;
+  getCouponByCode(code: string): Promise<Coupon | undefined>;
+  createCoupon(coupon: InsertCoupon): Promise<Coupon>;
+  updateCoupon(id: string, coupon: Partial<InsertCoupon>): Promise<Coupon>;
+  deleteCoupon(id: string): Promise<void>;
+  validateCoupon(code: string, userId?: string, orderAmount?: number): Promise<{ valid: boolean; coupon?: Coupon; message?: string }>;
+  applyCoupon(couponId: string, userId: string, orderId: string, discountAmount: number): Promise<CouponUsage>;
+
+  // Admin: Payment Settings operations
+  getAllPaymentSettings(): Promise<PaymentSetting[]>;
+  getPaymentSettingById(id: string): Promise<PaymentSetting | undefined>;
+  getActivePaymentSettings(): Promise<PaymentSetting[]>;
+  createPaymentSetting(setting: InsertPaymentSetting): Promise<PaymentSetting>;
+  updatePaymentSetting(id: string, setting: Partial<InsertPaymentSetting>): Promise<PaymentSetting>;
+  deletePaymentSetting(id: string): Promise<void>;
+
+  // Admin: Analytics operations
+  recordAnalyticsEvent(event: InsertAnalyticsEvent): Promise<AnalyticsEvent>;
+  getAnalyticsEvents(filters?: {
+    eventType?: string;
+    userId?: string;
+    productId?: string;
+    startDate?: Date;
+    endDate?: Date;
+    limit?: number;
+    offset?: number;
+  }): Promise<AnalyticsEvent[]>;
+  getAnalyticsSummary(startDate?: Date, endDate?: Date): Promise<{
+    totalPageViews: number;
+    totalProductViews: number;
+    totalPurchases: number;
+    totalRevenue: number;
+    topProducts: Array<{ productId: string; views: number; purchases: number }>;
+    topPages: Array<{ page: string; views: number }>;
+  }>;
+
+  // Admin: Customer management
+  getAllCustomers(filters?: {
+    search?: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<{ customers: User[]; total: number }>;
+  getCustomerAnalytics(userId: string): Promise<{
+    totalOrders: number;
+    totalSpent: number;
+    lastOrderDate?: Date;
+    favoriteCategories: Array<{ categoryId: string; orderCount: number }>;
+  }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -435,6 +518,439 @@ export class DatabaseStorage implements IStorage {
 
   async removeFromWishlist(id: string): Promise<void> {
     await db.delete(wishlistItems).where(eq(wishlistItems.id, id));
+  }
+
+  // Admin: Site Settings operations
+  async getSiteSettings(category?: string): Promise<SiteSetting[]> {
+    const conditions = [eq(siteSettings.isActive, true)];
+    if (category) {
+      conditions.push(eq(siteSettings.category, category));
+    }
+    return await db
+      .select()
+      .from(siteSettings)
+      .where(and(...conditions))
+      .orderBy(asc(siteSettings.key));
+  }
+
+  async getSiteSetting(key: string): Promise<SiteSetting | undefined> {
+    const [setting] = await db
+      .select()
+      .from(siteSettings)
+      .where(and(eq(siteSettings.key, key), eq(siteSettings.isActive, true)));
+    return setting;
+  }
+
+  async upsertSiteSetting(setting: InsertSiteSetting): Promise<SiteSetting> {
+    const [upsertedSetting] = await db
+      .insert(siteSettings)
+      .values(setting)
+      .onConflictDoUpdate({
+        target: siteSettings.key,
+        set: {
+          ...setting,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return upsertedSetting;
+  }
+
+  async deleteSiteSetting(id: string): Promise<void> {
+    await db.delete(siteSettings).where(eq(siteSettings.id, id));
+  }
+
+  // Admin: Slider/Banner operations
+  async getAllSliders(type?: string, placement?: string): Promise<Slider[]> {
+    const conditions = [];
+    if (type) conditions.push(eq(sliders.type, type));
+    if (placement) conditions.push(eq(sliders.placement, placement));
+    
+    let query = db.select().from(sliders);
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
+    return await query.orderBy(asc(sliders.position), desc(sliders.createdAt));
+  }
+
+  async getSliderById(id: string): Promise<Slider | undefined> {
+    const [slider] = await db.select().from(sliders).where(eq(sliders.id, id));
+    return slider;
+  }
+
+  async createSlider(slider: InsertSlider): Promise<Slider> {
+    const [newSlider] = await db.insert(sliders).values(slider).returning();
+    return newSlider;
+  }
+
+  async updateSlider(id: string, slider: Partial<InsertSlider>): Promise<Slider> {
+    const [updatedSlider] = await db
+      .update(sliders)
+      .set({ ...slider, updatedAt: new Date() })
+      .where(eq(sliders.id, id))
+      .returning();
+    return updatedSlider;
+  }
+
+  async deleteSlider(id: string): Promise<void> {
+    await db.delete(sliders).where(eq(sliders.id, id));
+  }
+
+  async getActiveSliders(placement?: string): Promise<Slider[]> {
+    const now = new Date();
+    const conditions = [
+      eq(sliders.isActive, true),
+      or(sql`${sliders.startDate} IS NULL`, sql`${sliders.startDate} <= ${now}`),
+      or(sql`${sliders.endDate} IS NULL`, sql`${sliders.endDate} >= ${now}`)
+    ];
+    if (placement) {
+      conditions.push(eq(sliders.placement, placement));
+    }
+    return await db
+      .select()
+      .from(sliders)
+      .where(and(...conditions))
+      .orderBy(asc(sliders.position));
+  }
+
+  // Admin: Coupon operations
+  async getAllCoupons(): Promise<Coupon[]> {
+    return await db
+      .select()
+      .from(coupons)
+      .orderBy(desc(coupons.createdAt));
+  }
+
+  async getCouponById(id: string): Promise<Coupon | undefined> {
+    const [coupon] = await db.select().from(coupons).where(eq(coupons.id, id));
+    return coupon;
+  }
+
+  async getCouponByCode(code: string): Promise<Coupon | undefined> {
+    const [coupon] = await db
+      .select()
+      .from(coupons)
+      .where(and(eq(coupons.code, code), eq(coupons.isActive, true)));
+    return coupon;
+  }
+
+  async createCoupon(coupon: InsertCoupon): Promise<Coupon> {
+    const [newCoupon] = await db.insert(coupons).values(coupon).returning();
+    return newCoupon;
+  }
+
+  async updateCoupon(id: string, coupon: Partial<InsertCoupon>): Promise<Coupon> {
+    const [updatedCoupon] = await db
+      .update(coupons)
+      .set({ ...coupon, updatedAt: new Date() })
+      .where(eq(coupons.id, id))
+      .returning();
+    return updatedCoupon;
+  }
+
+  async deleteCoupon(id: string): Promise<void> {
+    await db.delete(coupons).where(eq(coupons.id, id));
+  }
+
+  async validateCoupon(code: string, userId?: string, orderAmount?: number): Promise<{ valid: boolean; coupon?: Coupon; message?: string }> {
+    const coupon = await this.getCouponByCode(code);
+    
+    if (!coupon) {
+      return { valid: false, message: "Coupon code not found" };
+    }
+
+    const now = new Date();
+    
+    // Check if coupon is active
+    if (!coupon.isActive) {
+      return { valid: false, message: "Coupon is no longer active" };
+    }
+
+    // Check date validity
+    if (coupon.startDate && coupon.startDate > now) {
+      return { valid: false, message: "Coupon is not yet valid" };
+    }
+    
+    if (coupon.endDate && coupon.endDate < now) {
+      return { valid: false, message: "Coupon has expired" };
+    }
+
+    // Check usage limits
+    if (coupon.usageLimit && (coupon.usageCount || 0) >= coupon.usageLimit) {
+      return { valid: false, message: "Coupon usage limit exceeded" };
+    }
+
+    // Check minimum amount
+    if (coupon.minimumAmount && orderAmount && orderAmount < Number(coupon.minimumAmount)) {
+      return { valid: false, message: `Minimum order amount of $${coupon.minimumAmount} required` };
+    }
+
+    // Check user usage limit
+    if (userId && coupon.userLimit) {
+      const userUsageCount = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(couponUsage)
+        .where(and(eq(couponUsage.couponId, coupon.id), eq(couponUsage.userId, userId)));
+      
+      if (userUsageCount[0].count >= coupon.userLimit) {
+        return { valid: false, message: "You have already used this coupon" };
+      }
+    }
+
+    return { valid: true, coupon };
+  }
+
+  async applyCoupon(couponId: string, userId: string, orderId: string, discountAmount: number): Promise<CouponUsage> {
+    // Create usage record
+    const [usage] = await db
+      .insert(couponUsage)
+      .values({
+        couponId,
+        userId,
+        orderId,
+        discountAmount: discountAmount.toString(),
+      })
+      .returning();
+
+    // Update coupon usage count
+    await db
+      .update(coupons)
+      .set({
+        usageCount: sql`${coupons.usageCount} + 1`,
+        updatedAt: new Date(),
+      })
+      .where(eq(coupons.id, couponId));
+
+    return usage;
+  }
+
+  // Admin: Payment Settings operations
+  async getAllPaymentSettings(): Promise<PaymentSetting[]> {
+    return await db
+      .select()
+      .from(paymentSettings)
+      .orderBy(asc(paymentSettings.displayName));
+  }
+
+  async getPaymentSettingById(id: string): Promise<PaymentSetting | undefined> {
+    const [setting] = await db
+      .select()
+      .from(paymentSettings)
+      .where(eq(paymentSettings.id, id));
+    return setting;
+  }
+
+  async getActivePaymentSettings(): Promise<PaymentSetting[]> {
+    return await db
+      .select()
+      .from(paymentSettings)
+      .where(eq(paymentSettings.isActive, true))
+      .orderBy(asc(paymentSettings.displayName));
+  }
+
+  async createPaymentSetting(setting: InsertPaymentSetting): Promise<PaymentSetting> {
+    const [newSetting] = await db
+      .insert(paymentSettings)
+      .values(setting)
+      .returning();
+    return newSetting;
+  }
+
+  async updatePaymentSetting(id: string, setting: Partial<InsertPaymentSetting>): Promise<PaymentSetting> {
+    const [updatedSetting] = await db
+      .update(paymentSettings)
+      .set({ ...setting, updatedAt: new Date() })
+      .where(eq(paymentSettings.id, id))
+      .returning();
+    return updatedSetting;
+  }
+
+  async deletePaymentSetting(id: string): Promise<void> {
+    await db.delete(paymentSettings).where(eq(paymentSettings.id, id));
+  }
+
+  // Admin: Analytics operations
+  async recordAnalyticsEvent(event: InsertAnalyticsEvent): Promise<AnalyticsEvent> {
+    const [newEvent] = await db
+      .insert(analyticsEvents)
+      .values(event)
+      .returning();
+    return newEvent;
+  }
+
+  async getAnalyticsEvents(filters?: {
+    eventType?: string;
+    userId?: string;
+    productId?: string;
+    startDate?: Date;
+    endDate?: Date;
+    limit?: number;
+    offset?: number;
+  }): Promise<AnalyticsEvent[]> {
+    const conditions = [];
+
+    if (filters?.eventType) conditions.push(eq(analyticsEvents.eventType, filters.eventType));
+    if (filters?.userId) conditions.push(eq(analyticsEvents.userId, filters.userId));
+    if (filters?.productId) conditions.push(eq(analyticsEvents.productId, filters.productId));
+    if (filters?.startDate) conditions.push(sql`${analyticsEvents.createdAt} >= ${filters.startDate}`);
+    if (filters?.endDate) conditions.push(sql`${analyticsEvents.createdAt} <= ${filters.endDate}`);
+
+    let query = db.select().from(analyticsEvents);
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
+
+    query = query.orderBy(desc(analyticsEvents.createdAt));
+
+    if (filters?.limit) {
+      query = query.limit(filters.limit);
+    }
+    if (filters?.offset) {
+      query = query.offset(filters.offset);
+    }
+
+    return await query;
+  }
+
+  async getAnalyticsSummary(startDate?: Date, endDate?: Date): Promise<{
+    totalPageViews: number;
+    totalProductViews: number;
+    totalPurchases: number;
+    totalRevenue: number;
+    topProducts: Array<{ productId: string; views: number; purchases: number }>;
+    topPages: Array<{ page: string; views: number }>;
+  }> {
+    const conditions = [];
+    if (startDate) conditions.push(sql`${analyticsEvents.createdAt} >= ${startDate}`);
+    if (endDate) conditions.push(sql`${analyticsEvents.createdAt} <= ${endDate}`);
+
+    const baseCondition = conditions.length > 0 ? and(...conditions) : undefined;
+
+    // Get basic counts
+    const [pageViews] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(analyticsEvents)
+      .where(baseCondition ? and(eq(analyticsEvents.eventType, 'page_view'), baseCondition) : eq(analyticsEvents.eventType, 'page_view'));
+
+    const [productViews] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(analyticsEvents)
+      .where(baseCondition ? and(eq(analyticsEvents.eventType, 'product_view'), baseCondition) : eq(analyticsEvents.eventType, 'product_view'));
+
+    const [purchases] = await db
+      .select({ count: sql<number>`count(*)`, revenue: sql<number>`sum(${analyticsEvents.value})` })
+      .from(analyticsEvents)
+      .where(baseCondition ? and(eq(analyticsEvents.eventType, 'purchase'), baseCondition) : eq(analyticsEvents.eventType, 'purchase'));
+
+    // Get top products
+    const topProducts = await db
+      .select({
+        productId: analyticsEvents.productId,
+        views: sql<number>`count(case when ${analyticsEvents.eventType} = 'product_view' then 1 end)`,
+        purchases: sql<number>`count(case when ${analyticsEvents.eventType} = 'purchase' then 1 end)`,
+      })
+      .from(analyticsEvents)
+      .where(baseCondition ? and(sql`${analyticsEvents.productId} IS NOT NULL`, baseCondition) : sql`${analyticsEvents.productId} IS NOT NULL`)
+      .groupBy(analyticsEvents.productId)
+      .orderBy(desc(sql`count(case when ${analyticsEvents.eventType} = 'product_view' then 1 end)`))
+      .limit(10);
+
+    // Get top pages (simplified - would need metadata parsing in real implementation)
+    const topPages = await db
+      .select({
+        page: sql<string>`coalesce((${analyticsEvents.metadata}->>'page'), 'unknown')`,
+        views: sql<number>`count(*)`,
+      })
+      .from(analyticsEvents)
+      .where(baseCondition ? and(eq(analyticsEvents.eventType, 'page_view'), baseCondition) : eq(analyticsEvents.eventType, 'page_view'))
+      .groupBy(sql`coalesce((${analyticsEvents.metadata}->>'page'), 'unknown')`)
+      .orderBy(desc(sql`count(*)`))
+      .limit(10);
+
+    return {
+      totalPageViews: pageViews.count,
+      totalProductViews: productViews.count,
+      totalPurchases: purchases.count,
+      totalRevenue: purchases.revenue || 0,
+      topProducts: topProducts.filter(p => p.productId) as Array<{ productId: string; views: number; purchases: number }>,
+      topPages,
+    };
+  }
+
+  // Admin: Customer management
+  async getAllCustomers(filters?: {
+    search?: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<{ customers: User[]; total: number }> {
+    const conditions = [eq(users.isAdmin, false)];
+    
+    if (filters?.search) {
+      conditions.push(
+        or(
+          like(users.email, `%${filters.search}%`),
+          like(users.firstName, `%${filters.search}%`),
+          like(users.lastName, `%${filters.search}%`)
+        )
+      );
+    }
+
+    const [{ count }] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(users)
+      .where(and(...conditions));
+    
+    let query = db.select().from(users).where(and(...conditions));
+    query = query.orderBy(desc(users.createdAt));
+    
+    if (filters?.limit) {
+      query = query.limit(filters.limit);
+    }
+    if (filters?.offset) {
+      query = query.offset(filters.offset);
+    }
+
+    const customers = await query;
+
+    return { customers, total: count };
+  }
+
+  async getCustomerAnalytics(userId: string): Promise<{
+    totalOrders: number;
+    totalSpent: number;
+    lastOrderDate?: Date;
+    favoriteCategories: Array<{ categoryId: string; orderCount: number }>;
+  }> {
+    // Get order statistics
+    const [orderStats] = await db
+      .select({
+        totalOrders: sql<number>`count(*)`,
+        totalSpent: sql<number>`sum(${orders.totalAmount})`,
+        lastOrderDate: sql<Date>`max(${orders.createdAt})`,
+      })
+      .from(orders)
+      .where(eq(orders.userId, userId));
+
+    // Get favorite categories
+    const favoriteCategories = await db
+      .select({
+        categoryId: products.categoryId,
+        orderCount: sql<number>`count(distinct ${orders.id})`,
+      })
+      .from(orders)
+      .innerJoin(orderItems, eq(orders.id, orderItems.orderId))
+      .innerJoin(products, eq(orderItems.productId, products.id))
+      .where(eq(orders.userId, userId))
+      .groupBy(products.categoryId)
+      .orderBy(desc(sql`count(distinct ${orders.id})`))
+      .limit(5);
+
+    return {
+      totalOrders: orderStats.totalOrders || 0,
+      totalSpent: orderStats.totalSpent || 0,
+      lastOrderDate: orderStats.lastOrderDate || undefined,
+      favoriteCategories,
+    };
   }
 }
 

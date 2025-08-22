@@ -135,6 +135,102 @@ export const wishlistItems = pgTable("wishlist_items", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Site settings table for managing header, footer, menu, etc.
+export const siteSettings = pgTable("site_settings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  key: varchar("key").notNull().unique(), // e.g., 'header_logo', 'footer_text', 'site_name'
+  value: text("value"), // JSON string for complex values
+  category: varchar("category").notNull(), // 'header', 'footer', 'menu', 'general'
+  type: varchar("type").notNull().default("text"), // 'text', 'image', 'json', 'boolean'
+  description: text("description"),
+  isActive: boolean("is_active").default(true),
+  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Sliders and banners table
+export const sliders = pgTable("sliders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  imageUrl: varchar("image_url").notNull(),
+  linkUrl: varchar("link_url"),
+  buttonText: varchar("button_text"),
+  position: integer("position").default(0), // Order of display
+  type: varchar("type").notNull().default("slider"), // 'slider', 'banner', 'popup'
+  placement: varchar("placement").default("home"), // 'home', 'category', 'product'
+  isActive: boolean("is_active").default(true),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Coupons and offers table
+export const coupons = pgTable("coupons", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  code: varchar("code").notNull().unique(),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  type: varchar("type").notNull(), // 'percentage', 'fixed', 'free_shipping'
+  value: decimal("value", { precision: 10, scale: 2 }).notNull(),
+  minimumAmount: decimal("minimum_amount", { precision: 10, scale: 2 }),
+  maximumDiscount: decimal("maximum_discount", { precision: 10, scale: 2 }),
+  usageLimit: integer("usage_limit"), // Total usage limit
+  usageCount: integer("usage_count").default(0),
+  userLimit: integer("user_limit").default(1), // Per user limit
+  applicableCategories: text("applicable_categories").array(),
+  applicableProducts: text("applicable_products").array(),
+  isActive: boolean("is_active").default(true),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Payment settings table
+export const paymentSettings = pgTable("payment_settings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  provider: varchar("provider").notNull(), // 'stripe', 'razorpay', 'paypal'
+  displayName: varchar("display_name").notNull(),
+  apiKey: varchar("api_key"), // Encrypted
+  secretKey: varchar("secret_key"), // Encrypted
+  webhookSecret: varchar("webhook_secret"), // Encrypted
+  isActive: boolean("is_active").default(false),
+  isTestMode: boolean("is_test_mode").default(true),
+  configuration: jsonb("configuration"), // Additional provider-specific settings
+  supportedCurrencies: text("supported_currencies").array(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Analytics events table
+export const analyticsEvents = pgTable("analytics_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  eventType: varchar("event_type").notNull(), // 'page_view', 'product_view', 'purchase', 'add_to_cart'
+  userId: varchar("user_id"),
+  sessionId: varchar("session_id"),
+  productId: varchar("product_id"),
+  categoryId: varchar("category_id"),
+  orderId: varchar("order_id"),
+  value: decimal("value", { precision: 10, scale: 2 }), // For purchase events
+  metadata: jsonb("metadata"), // Additional event data
+  userAgent: text("user_agent"),
+  ipAddress: varchar("ip_address"),
+  referrer: text("referrer"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Coupon usage tracking
+export const couponUsage = pgTable("coupon_usage", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  couponId: varchar("coupon_id").notNull(),
+  userId: varchar("user_id"),
+  orderId: varchar("order_id"),
+  discountAmount: decimal("discount_amount", { precision: 10, scale: 2 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   orders: many(orders),
@@ -215,6 +311,44 @@ export const wishlistItemsRelations = relations(wishlistItems, ({ one }) => ({
   }),
 }));
 
+export const couponsRelations = relations(coupons, ({ many }) => ({
+  usage: many(couponUsage),
+}));
+
+export const couponUsageRelations = relations(couponUsage, ({ one }) => ({
+  coupon: one(coupons, {
+    fields: [couponUsage.couponId],
+    references: [coupons.id],
+  }),
+  user: one(users, {
+    fields: [couponUsage.userId],
+    references: [users.id],
+  }),
+  order: one(orders, {
+    fields: [couponUsage.orderId],
+    references: [orders.id],
+  }),
+}));
+
+export const analyticsEventsRelations = relations(analyticsEvents, ({ one }) => ({
+  user: one(users, {
+    fields: [analyticsEvents.userId],
+    references: [users.id],
+  }),
+  product: one(products, {
+    fields: [analyticsEvents.productId],
+    references: [products.id],
+  }),
+  category: one(categories, {
+    fields: [analyticsEvents.categoryId],
+    references: [categories.id],
+  }),
+  order: one(orders, {
+    fields: [analyticsEvents.orderId],
+    references: [orders.id],
+  }),
+}));
+
 // Insert schemas
 export const insertCategorySchema = createInsertSchema(categories).omit({
   id: true,
@@ -254,6 +388,42 @@ export const insertWishlistItemSchema = createInsertSchema(wishlistItems).omit({
   createdAt: true,
 });
 
+// Admin schemas
+export const insertSiteSettingSchema = createInsertSchema(siteSettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSliderSchema = createInsertSchema(sliders).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertCouponSchema = createInsertSchema(coupons).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  usageCount: true,
+});
+
+export const insertPaymentSettingSchema = createInsertSchema(paymentSettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertAnalyticsEventSchema = createInsertSchema(analyticsEvents).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertCouponUsageSchema = createInsertSchema(couponUsage).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -271,3 +441,17 @@ export type CartItem = typeof cartItems.$inferSelect;
 export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
 export type WishlistItem = typeof wishlistItems.$inferSelect;
 export type InsertWishlistItem = z.infer<typeof insertWishlistItemSchema>;
+
+// Admin types
+export type SiteSetting = typeof siteSettings.$inferSelect;
+export type InsertSiteSetting = z.infer<typeof insertSiteSettingSchema>;
+export type Slider = typeof sliders.$inferSelect;
+export type InsertSlider = z.infer<typeof insertSliderSchema>;
+export type Coupon = typeof coupons.$inferSelect;
+export type InsertCoupon = z.infer<typeof insertCouponSchema>;
+export type PaymentSetting = typeof paymentSettings.$inferSelect;
+export type InsertPaymentSetting = z.infer<typeof insertPaymentSettingSchema>;
+export type AnalyticsEvent = typeof analyticsEvents.$inferSelect;
+export type InsertAnalyticsEvent = z.infer<typeof insertAnalyticsEventSchema>;
+export type CouponUsage = typeof couponUsage.$inferSelect;
+export type InsertCouponUsage = z.infer<typeof insertCouponUsageSchema>;
