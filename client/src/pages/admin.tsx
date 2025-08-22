@@ -77,7 +77,7 @@ export default function Admin() {
   }, [user, authLoading, toast]);
 
   // Fetch data
-  const { data: products = [], isLoading: productsLoading } = useQuery({
+  const { data: products = { products: [], total: 0 }, isLoading: productsLoading } = useQuery({
     queryKey: ["/api/products", { limit: 100 }],
     retry: false,
     enabled: !!user?.isAdmin,
@@ -291,9 +291,9 @@ export default function Admin() {
 
   // Calculate dashboard stats
   const totalProducts = products?.products?.length || 0;
-  const totalOrders = orders.length || 0;
-  const totalRevenue = orders.reduce((sum: number, order: any) => sum + parseFloat(order.totalAmount || "0"), 0);
-  const pendingOrders = orders.filter((order: any) => order.status === "pending").length;
+  const totalOrders = Array.isArray(orders) ? orders.length : 0;
+  const totalRevenue = Array.isArray(orders) ? orders.reduce((sum: number, order: any) => sum + parseFloat(order.totalAmount || "0"), 0) : 0;
+  const pendingOrders = Array.isArray(orders) ? orders.filter((order: any) => order.status === "pending").length : 0;
 
   if (authLoading) {
     return (
@@ -387,7 +387,7 @@ export default function Admin() {
                         </div>
                       ))}
                     </div>
-                  ) : orders.length === 0 ? (
+                  ) : !Array.isArray(orders) || orders.length === 0 ? (
                     <p className="text-gray-500 text-center py-8" data-testid="text-no-recent-orders">No orders yet</p>
                   ) : (
                     <div className="space-y-4">
@@ -589,7 +589,7 @@ export default function Admin() {
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    {categories.map((category: any) => (
+                                    {Array.isArray(categories) && categories.map((category: any) => (
                                       <SelectItem key={category.id} value={category.id}>
                                         {category.name}
                                       </SelectItem>
@@ -894,7 +894,7 @@ export default function Admin() {
                                 </FormControl>
                                 <SelectContent>
                                   <SelectItem value="">No Parent</SelectItem>
-                                  {categories.map((category: any) => (
+                                  {Array.isArray(categories) && categories.map((category: any) => (
                                     <SelectItem key={category.id} value={category.id}>
                                       {category.name}
                                     </SelectItem>

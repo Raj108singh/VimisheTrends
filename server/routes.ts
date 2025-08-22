@@ -301,7 +301,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Cart routes
   app.get("/api/cart", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      // Handle both OAuth and email/password users
+      const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       const cartItems = await storage.getCartItems(userId);
       res.json(cartItems);
     } catch (error) {
@@ -312,7 +313,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/cart", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       const cartItemData = insertCartItemSchema.parse({
         ...req.body,
         userId,
@@ -348,7 +349,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/cart", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       await storage.clearCart(userId);
       res.status(204).send();
     } catch (error) {
@@ -360,7 +361,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Wishlist routes
   app.get("/api/wishlist", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       const wishlistItems = await storage.getWishlistItems(userId);
       res.json(wishlistItems);
     } catch (error) {
@@ -371,7 +372,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/wishlist", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       const wishlistItemData = insertWishlistItemSchema.parse({
         ...req.body,
         userId,
@@ -397,7 +398,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Orders routes
   app.get("/api/orders", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       const orders = await storage.getOrdersByUserId(userId);
       res.json(orders);
     } catch (error) {
@@ -423,7 +424,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/orders", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       const { items, ...orderData } = req.body;
 
       const order = await storage.createOrder({
@@ -466,7 +467,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/products/:productId/reviews", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       const reviewData = insertReviewSchema.parse({
         ...req.body,
         userId,
