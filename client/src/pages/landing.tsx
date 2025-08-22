@@ -30,33 +30,57 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Header />
       
-      {/* Hero Section */}
-      <section className="hero-gradient py-20 px-4">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6" data-testid="hero-title">
-            Style Your Little Ones
-          </h2>
-          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto" data-testid="hero-description">
-            Discover premium children's fashion with comfort, quality, and style. From casual everyday wear to special occasion outfits.
-          </p>
-          <div className="space-x-4">
-            <Button 
-              onClick={handleLogin}
-              className="bg-white text-primary font-semibold px-8 py-4 rounded-full hover:shadow-lg transform hover:scale-105 transition-all"
-              data-testid="button-shop-collection"
-            >
-              Shop Collection
-            </Button>
-            <Button 
-              variant="outline"
-              className="border-2 border-white text-white font-semibold px-8 py-4 rounded-full hover:bg-white hover:text-primary transition-all"
-              data-testid="button-view-lookbook"
-            >
-              View Lookbook
-            </Button>
+      {/* Bewakoof Style 3-Column Banner */}
+      <section className="py-6 px-4">
+        <div className="container mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 h-80">
+            {/* Panel 1: DENIM VERSE */}
+            <div className="relative overflow-hidden bg-cover bg-center" style={{backgroundImage: 'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url("https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800")'}}>
+              <div className="absolute bottom-6 left-6 text-white z-20">
+                <h2 className="text-3xl font-black mb-1 tracking-wide">DENIM VERSE</h2>
+                <p className="text-base font-medium">A FIT FOR EVERY YOU</p>
+              </div>
+            </div>
+
+            {/* Panel 2: BUY 2 OVERSIZED T-SHIRTS */}
+            <div className="relative bg-gradient-to-br from-orange-400 via-red-400 to-red-500">
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-8">
+                <div className="mb-6">
+                  <img 
+                    src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&h=120" 
+                    alt="T-shirts" 
+                    className="w-40 h-24 object-cover rounded-lg shadow-lg"
+                  />
+                </div>
+                <h2 className="text-3xl font-black mb-1">BUY 2</h2>
+                <h3 className="text-xl font-black mb-3">OVERSIZED T-SHIRTS</h3>
+                <p className="text-2xl font-black">AT ₹999</p>
+              </div>
+            </div>
+
+            {/* Panel 3: Design Your Tee with GOOGLE AI */}
+            <div className="relative overflow-hidden bg-cover bg-center" style={{backgroundImage: 'linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url("https://images.unsplash.com/photo-1446776877081-d282a0f896e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=800")'}}>
+              <div className="absolute top-4 left-4 z-20">
+                <span className="bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-bold">
+                  BEWAKOOF® x 🌍
+                </span>
+              </div>
+              <div className="absolute bottom-6 left-6 text-white z-20">
+                <h2 className="text-2xl font-black mb-1">Design Your Tee with</h2>
+                <h3 className="text-xl font-black mb-2 text-yellow-400">GOOGLE AI</h3>
+                <p className="text-sm font-medium">Experience Endless Imagination</p>
+                <Button 
+                  onClick={handleLogin}
+                  className="mt-4 bg-yellow-400 text-black px-6 py-2 rounded-full font-bold hover:bg-yellow-300"
+                  data-testid="button-shop-collection"
+                >
+                  Shop Collection
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
