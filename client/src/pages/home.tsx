@@ -59,10 +59,58 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      {/* Main Carousel */}
+      {/* Three Column Banner Grid */}
       <section className="py-4 px-4 bg-white">
         <div className="container mx-auto">
-          <Carousel />
+          <div className="grid md:grid-cols-3 gap-4 h-64 md:h-80">
+            {/* Left Panel - Denim Verse */}
+            <div className="relative bg-gradient-to-r from-blue-300 to-blue-400 rounded-lg overflow-hidden cursor-pointer group">
+              <div className="absolute inset-0 bg-black bg-opacity-20"></div>
+              <img 
+                src="https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=600" 
+                alt="Denim collection" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute bottom-8 left-6 text-white z-10">
+                <h2 className="text-2xl md:text-3xl font-black mb-1">DENIM VERSE</h2>
+                <p className="text-sm md:text-base font-medium">A FIT FOR EVERY YOU</p>
+              </div>
+            </div>
+
+            {/* Middle Panel - Buy 2 T-Shirts */}
+            <div className="relative bg-gradient-to-r from-orange-400 to-red-500 rounded-lg overflow-hidden cursor-pointer group">
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-6 text-center">
+                <div className="mb-4">
+                  <img 
+                    src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200" 
+                    alt="T-shirts hanging" 
+                    className="w-32 h-24 md:w-40 md:h-32 object-cover rounded-lg mx-auto"
+                  />
+                </div>
+                <h2 className="text-xl md:text-2xl font-black mb-1">BUY 2</h2>
+                <h3 className="text-lg md:text-xl font-black mb-2">OVERSIZED T-SHIRTS</h3>
+                <p className="text-lg md:text-xl font-bold">AT ₹999</p>
+              </div>
+            </div>
+
+            {/* Right Panel - Google AI */}
+            <div className="relative bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg overflow-hidden cursor-pointer group">
+              <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+              <img 
+                src="https://images.unsplash.com/photo-1446776877081-d282a0f896e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=600" 
+                alt="Space design" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute inset-0 flex flex-col justify-end p-6 text-white z-10">
+                <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold mb-2 self-start">
+                  BEWAKOOF® x 🌍
+                </div>
+                <h2 className="text-xl md:text-2xl font-black mb-1">Design Your Tee with</h2>
+                <h3 className="text-lg md:text-xl font-black mb-2">GOOGLE AI</h3>
+                <p className="text-sm md:text-base font-medium">Experience Endless Imagination</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
