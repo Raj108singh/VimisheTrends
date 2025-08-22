@@ -566,11 +566,17 @@ export class DatabaseStorage implements IStorage {
     if (type) conditions.push(eq(sliders.type, type));
     if (placement) conditions.push(eq(sliders.placement, placement));
     
-    let query = db.select().from(sliders);
     if (conditions.length > 0) {
-      query = query.where(and(...conditions));
+      return await db
+        .select()
+        .from(sliders)
+        .where(and(...conditions))
+        .orderBy(asc(sliders.position), desc(sliders.createdAt));
     }
-    return await query.orderBy(asc(sliders.position), desc(sliders.createdAt));
+    return await db
+      .select()
+      .from(sliders)
+      .orderBy(asc(sliders.position), desc(sliders.createdAt));
   }
 
   async getSliderById(id: string): Promise<Slider | undefined> {
@@ -795,21 +801,19 @@ export class DatabaseStorage implements IStorage {
     if (filters?.startDate) conditions.push(sql`${analyticsEvents.createdAt} >= ${filters.startDate}`);
     if (filters?.endDate) conditions.push(sql`${analyticsEvents.createdAt} <= ${filters.endDate}`);
 
-    let query = db.select().from(analyticsEvents);
     if (conditions.length > 0) {
-      query = query.where(and(...conditions));
+      let query = db.select().from(analyticsEvents).where(and(...conditions));
+      query = query.orderBy(desc(analyticsEvents.createdAt));
+      if (filters?.limit) query = query.limit(filters.limit);
+      if (filters?.offset) query = query.offset(filters.offset);
+      return await query;
+    } else {
+      let query = db.select().from(analyticsEvents);
+      query = query.orderBy(desc(analyticsEvents.createdAt));
+      if (filters?.limit) query = query.limit(filters.limit);
+      if (filters?.offset) query = query.offset(filters.offset);
+      return await query;
     }
-
-    query = query.orderBy(desc(analyticsEvents.createdAt));
-
-    if (filters?.limit) {
-      query = query.limit(filters.limit);
-    }
-    if (filters?.offset) {
-      query = query.offset(filters.offset);
-    }
-
-    return await query;
   }
 
   async getAnalyticsSummary(startDate?: Date, endDate?: Date): Promise<{
@@ -824,7 +828,7 @@ export class DatabaseStorage implements IStorage {
     if (startDate) conditions.push(sql`${analyticsEvents.createdAt} >= ${startDate}`);
     if (endDate) conditions.push(sql`${analyticsEvents.createdAt} <= ${endDate}`);
 
-    const baseCondition = conditions.length > 0 ? and(...conditions) : undefined;
+    const baseCondition = conditions.length > 0 ? and(...conditions) : sql`1=1`;
 
     // Get basic counts
     const [pageViews] = await db
@@ -900,8 +904,7 @@ export class DatabaseStorage implements IStorage {
       .from(users)
       .where(and(...conditions));
     
-    let query = db.select().from(users).where(and(...conditions));
-    query = query.orderBy(desc(users.createdAt));
+    let query = db.select().from(users).where(and(...conditions)).orderBy(desc(users.createdAt));
     
     if (filters?.limit) {
       query = query.limit(filters.limit);

@@ -336,8 +336,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Simple authentication middleware for cart operations
+  const requireAuth = async (req: any, res: any, next: any) => {
+    try {
+      if (!req.isAuthenticated() || !req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      next();
+    } catch (error) {
+      console.error("Auth check error:", error);
+      res.status(401).json({ message: "Unauthorized" });
+    }
+  };
+
   // Cart routes
-  app.get("/api/cart", isAuthenticated, async (req: any, res) => {
+  app.get("/api/cart", requireAuth, async (req: any, res) => {
     try {
       // Handle both OAuth and email/password users
       const userId = req.user.claims ? req.user.claims.sub : req.user.id;
@@ -349,7 +362,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/cart", isAuthenticated, async (req: any, res) => {
+  app.post("/api/cart", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       const cartItemData = insertCartItemSchema.parse({
@@ -364,7 +377,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/cart/:id", isAuthenticated, async (req: any, res) => {
+  app.put("/api/cart/:id", requireAuth, async (req: any, res) => {
     try {
       const { quantity } = req.body;
       const cartItem = await storage.updateCartItem(req.params.id, quantity);
@@ -375,7 +388,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/cart/:id", isAuthenticated, async (req: any, res) => {
+  app.delete("/api/cart/:id", requireAuth, async (req: any, res) => {
     try {
       await storage.removeFromCart(req.params.id);
       res.status(204).send();
@@ -385,7 +398,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/cart", isAuthenticated, async (req: any, res) => {
+  app.delete("/api/cart", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       await storage.clearCart(userId);
@@ -397,7 +410,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Wishlist routes
-  app.get("/api/wishlist", isAuthenticated, async (req: any, res) => {
+  app.get("/api/wishlist", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       const wishlistItems = await storage.getWishlistItems(userId);
@@ -408,7 +421,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/wishlist", isAuthenticated, async (req: any, res) => {
+  app.post("/api/wishlist", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       const wishlistItemData = insertWishlistItemSchema.parse({
@@ -423,7 +436,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/wishlist/:id", isAuthenticated, async (req: any, res) => {
+  app.delete("/api/wishlist/:id", requireAuth, async (req: any, res) => {
     try {
       await storage.removeFromWishlist(req.params.id);
       res.status(204).send();
@@ -434,7 +447,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Orders routes
-  app.get("/api/orders", isAuthenticated, async (req: any, res) => {
+  app.get("/api/orders", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       
@@ -468,7 +481,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/orders", isAuthenticated, async (req: any, res) => {
+  app.post("/api/orders", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims ? req.user.claims.sub : req.user.id;
       const { items, ...orderData } = req.body;
