@@ -6,7 +6,6 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import ProductCard from "@/components/product-card";
 import CartSidebar from "@/components/cart-sidebar";
-import Carousel from "@/components/carousel";
 import { useQuery } from "@tanstack/react-query";
 import type { Product, Category } from "@shared/schema";
 
