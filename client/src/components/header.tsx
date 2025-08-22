@@ -109,17 +109,45 @@ export default function Header() {
                 {isAuthenticated ? (
                   <div className="relative group">
                     <button className="text-sm font-semibold text-gray-800 hover:text-black uppercase tracking-wide" data-testid="button-account">
-                      ACCOUNT
+                      {user?.firstName || "ACCOUNT"}
                     </button>
+                    <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                      <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-testid="link-profile">
+                        My Profile
+                      </Link>
+                      <Link href="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-testid="link-orders">
+                        My Orders
+                      </Link>
+                      {user?.isAdmin && (
+                        <Link href="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-testid="link-admin">
+                          Admin Panel
+                        </Link>
+                      )}
+                      <hr className="my-1" />
+                      <button 
+                        onClick={async () => {
+                          try {
+                            await fetch("/api/auth/logout", { method: "POST" });
+                            window.location.href = "/login";
+                          } catch (error) {
+                            console.error("Logout error:", error);
+                          }
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        data-testid="button-logout"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
                   </div>
                 ) : (
-                  <button 
-                    onClick={() => window.location.href = "/api/login"}
+                  <Link 
+                    href="/login"
                     className="text-sm font-semibold text-gray-800 hover:text-black uppercase tracking-wide"
                     data-testid="button-login"
                   >
                     LOGIN
-                  </button>
+                  </Link>
                 )}
                 <button className="hover:text-black transition-colors" data-testid="button-wishlist">
                   <i className="far fa-heart text-gray-700 text-xl"></i>
@@ -234,13 +262,14 @@ export default function Header() {
                 </button>
               </>
             ) : (
-              <button 
-                onClick={() => window.location.href = "/api/login"}
+              <Link 
+                href="/login"
                 className="block text-gray-700 text-lg py-2 w-full text-left"
+                onClick={toggleMobileMenu}
                 data-testid="button-login-mobile"
               >
                 Login
-              </button>
+              </Link>
             )}
           </nav>
         </div>
