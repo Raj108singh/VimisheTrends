@@ -21,7 +21,7 @@ export default function Footer() {
               <h3 className="text-xl font-bold" data-testid="text-footer-brand">Vimishe Fashion Trends</h3>
             </div>
             <p className="text-gray-300 mb-4" data-testid="text-footer-description">
-              Premium children's clothing with comfort, style, and quality you can trust.
+              Comfortable, safe, and stylish innerwear for growing children. Made with love in India.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-300 hover:text-primary" data-testid="link-facebook">
@@ -44,37 +44,42 @@ export default function Footer() {
             <h4 className="font-semibold text-lg mb-4" data-testid="text-shop-title">Shop</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/products?categoryId=casual" className="text-gray-300 hover:text-white" data-testid="link-casual-wear">
-                  Casual Wear
+                <Link href="/products?category=training-bras" className="text-gray-300 hover:text-white" data-testid="link-training-bras">
+                  Training Bras
                 </Link>
               </li>
               <li>
-                <Link href="/products?categoryId=formal" className="text-gray-300 hover:text-white" data-testid="link-formal-wear">
-                  Formal Wear
+                <Link href="/products?category=camisoles" className="text-gray-300 hover:text-white" data-testid="link-camisoles">
+                  Camisoles
                 </Link>
               </li>
               <li>
-                <Link href="/products?categoryId=baby" className="text-gray-300 hover:text-white" data-testid="link-baby-collection">
-                  Baby Collection
+                <Link href="/products?category=underwear-packs" className="text-gray-300 hover:text-white" data-testid="link-underwear-packs">
+                  Underwear Packs
                 </Link>
               </li>
               <li>
-                <Link href="/products?categoryId=accessories" className="text-gray-300 hover:text-white" data-testid="link-accessories">
-                  Accessories
+                <Link href="/products?category=night-suits" className="text-gray-300 hover:text-white" data-testid="link-night-suits">
+                  Night Suits
                 </Link>
               </li>
               <li>
-                <Link href="/products?isOnSale=true" className="text-gray-300 hover:text-white" data-testid="link-sale-items">
-                  Sale Items
+                <Link href="/products?category=boxers" className="text-gray-300 hover:text-white" data-testid="link-boxers">
+                  Boys Boxers
                 </Link>
               </li>
             </ul>
           </div>
           
-          {/* Customer Care */}
+          {/* Company */}
           <div>
-            <h4 className="font-semibold text-lg mb-4" data-testid="text-customer-care-title">Customer Care</h4>
+            <h4 className="font-semibold text-lg mb-4" data-testid="text-company-title">Company</h4>
             <ul className="space-y-2">
+              <li>
+                <Link href="/about" className="text-gray-300 hover:text-white" data-testid="link-about-us">
+                  About Us
+                </Link>
+              </li>
               <li>
                 <a href="#" className="text-gray-300 hover:text-white" data-testid="link-contact-us">
                   Contact Us
@@ -86,18 +91,13 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white" data-testid="link-shipping-info">
-                  Shipping Info
-                </a>
-              </li>
-              <li>
                 <a href="#" className="text-gray-300 hover:text-white" data-testid="link-returns">
-                  Returns
+                  Returns & Exchange
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white" data-testid="link-faq">
-                  FAQ
+                <a href="#" className="text-gray-300 hover:text-white" data-testid="link-privacy">
+                  Privacy Policy
                 </a>
               </li>
             </ul>
@@ -129,7 +129,7 @@ export default function Footer() {
         
         <div className="border-t border-gray-700 mt-8 pt-8 text-center">
           <p className="text-gray-300" data-testid="text-copyright">
-            &copy; 2024 Vimishe Fashion Trends. All rights reserved.
+            &copy; 2024 Vimishe Fashion Trends. All rights reserved. Made with ❤️ in India.
           </p>
         </div>
       </div>

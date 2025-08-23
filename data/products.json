@@ -1,0 +1,198 @@
+{
+  "categories": [
+    {
+      "id": "training-bras",
+      "name": "Training Bras",
+      "description": "Comfortable first bras for growing girls"
+    },
+    {
+      "id": "camisoles",
+      "name": "Camisoles",
+      "description": "Soft & breathable inner wear"
+    },
+    {
+      "id": "underwear-packs",
+      "name": "Underwear Packs",
+      "description": "Value packs of comfortable underwear"
+    },
+    {
+      "id": "night-suits",
+      "name": "Night Suits",
+      "description": "Cozy sleepwear for kids"
+    },
+    {
+      "id": "boxers",
+      "name": "Boxers",
+      "description": "Comfortable boys' underwear"
+    },
+    {
+      "id": "skater-skirts",
+      "name": "Skater Skirts",
+      "description": "Trendy casual wear for girls"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Comfort First Training Bra - 3 Pack",
+      "category": "training-bras",
+      "price": 899,
+      "originalPrice": 1299,
+      "discount": 31,
+      "packInfo": "3-Pack",
+      "images": [
+        "/api/placeholder/400/500",
+        "/api/placeholder/400/500"
+      ],
+      "description": "Soft cotton training bras perfect for growing girls. Made with premium cotton blend for all-day comfort.",
+      "features": [
+        "100% Cotton Inner Lining",
+        "No Underwire for Comfort",
+        "Adjustable Straps",
+        "Breathable Fabric"
+      ],
+      "ageGroup": "8-14 years",
+      "sizes": ["28", "30", "32"],
+      "fabric": "Cotton Spandex",
+      "colors": ["Pink", "White", "Peach"],
+      "rating": 4.8,
+      "reviews": 156,
+      "tags": ["bestseller", "comfort", "cotton"]
+    },
+    {
+      "id": 2,
+      "name": "Cartoon Print Camisoles - 2 Pack",
+      "category": "camisoles",
+      "price": 649,
+      "originalPrice": 899,
+      "discount": 28,
+      "packInfo": "2-Pack",
+      "images": [
+        "/api/placeholder/400/500",
+        "/api/placeholder/400/500"
+      ],
+      "description": "Fun cartoon printed camisoles that kids love to wear. Super soft and skin-friendly.",
+      "features": [
+        "Fun Cartoon Prints",
+        "Super Soft Cotton",
+        "Easy Wash & Care",
+        "Fade Resistant Colors"
+      ],
+      "ageGroup": "6-12 years",
+      "sizes": ["S", "M", "L", "XL"],
+      "fabric": "Cotton",
+      "colors": ["Unicorn Print", "Butterfly Print", "Rainbow Print"],
+      "rating": 4.6,
+      "reviews": 89,
+      "tags": ["cartoon", "colorful", "kids-favorite"]
+    },
+    {
+      "id": 3,
+      "name": "Premium Cotton Underwear Pack - 5 Pack",
+      "category": "underwear-packs",
+      "price": 799,
+      "originalPrice": 1199,
+      "discount": 33,
+      "packInfo": "5-Pack",
+      "images": [
+        "/api/placeholder/400/500",
+        "/api/placeholder/400/500"
+      ],
+      "description": "Value pack of premium cotton underwear for everyday comfort and freshness.",
+      "features": [
+        "100% Pure Cotton",
+        "Antibacterial Treatment",
+        "Elastic Waistband",
+        "Value for Money"
+      ],
+      "ageGroup": "4-12 years",
+      "sizes": ["S", "M", "L", "XL"],
+      "fabric": "Cotton",
+      "colors": ["Mixed Colors", "Pastel Pack", "Bright Colors"],
+      "rating": 4.7,
+      "reviews": 234,
+      "tags": ["value-pack", "cotton", "essential"]
+    },
+    {
+      "id": 4,
+      "name": "Cozy Night Suit Set",
+      "category": "night-suits",
+      "price": 1299,
+      "originalPrice": 1799,
+      "discount": 28,
+      "packInfo": "1 Set",
+      "images": [
+        "/api/placeholder/400/500",
+        "/api/placeholder/400/500"
+      ],
+      "description": "Ultra-soft night suits for peaceful sleep. Made with organic cotton for sensitive skin.",
+      "features": [
+        "Organic Cotton Fabric",
+        "Temperature Regulating",
+        "Anti-Static Properties",
+        "Machine Washable"
+      ],
+      "ageGroup": "2-10 years",
+      "sizes": ["XS", "S", "M", "L"],
+      "fabric": "Organic Cotton",
+      "colors": ["Sky Blue", "Lavender", "Mint Green"],
+      "rating": 4.9,
+      "reviews": 67,
+      "tags": ["organic", "nightwear", "premium"]
+    },
+    {
+      "id": 5,
+      "name": "Boys Comfort Boxers - 4 Pack",
+      "category": "boxers",
+      "price": 699,
+      "originalPrice": 999,
+      "discount": 30,
+      "packInfo": "4-Pack",
+      "images": [
+        "/api/placeholder/400/500",
+        "/api/placeholder/400/500"
+      ],
+      "description": "Comfortable cotton boxers designed for active boys. Breathable and durable.",
+      "features": [
+        "Moisture Wicking",
+        "Flat Seam Construction",
+        "Tag-Free Comfort",
+        "Reinforced Elastic"
+      ],
+      "ageGroup": "6-14 years",
+      "sizes": ["S", "M", "L", "XL"],
+      "fabric": "Cotton Blend",
+      "colors": ["Sports Theme", "Solid Colors", "Geometric Print"],
+      "rating": 4.5,
+      "reviews": 123,
+      "tags": ["boys", "active", "comfortable"]
+    },
+    {
+      "id": 6,
+      "name": "Trendy Skater Skirt",
+      "category": "skater-skirts",
+      "price": 849,
+      "originalPrice": 1199,
+      "discount": 29,
+      "packInfo": "1 Piece",
+      "images": [
+        "/api/placeholder/400/500",
+        "/api/placeholder/400/500"
+      ],
+      "description": "Stylish skater skirts perfect for casual outings. Trendy and comfortable.",
+      "features": [
+        "Flowy Silhouette",
+        "Elastic Waistband",
+        "Wrinkle Resistant",
+        "Easy Movement"
+      ],
+      "ageGroup": "8-16 years",
+      "sizes": ["XS", "S", "M", "L"],
+      "fabric": "Cotton Poly Blend",
+      "colors": ["Navy Blue", "Pink", "Black", "Floral Print"],
+      "rating": 4.4,
+      "reviews": 78,
+      "tags": ["trendy", "casual", "girls"]
+    }
+  ]
+}

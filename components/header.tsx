@@ -49,34 +49,41 @@ export default function Header() {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-8">
+            <nav className="hidden lg:flex items-center space-x-6">
               <Link 
-                href="/products?category=girls" 
-                className="text-gray-800 hover:text-pink-500 font-semibold transition-colors uppercase text-sm tracking-wide"
-                data-testid="link-girls"
+                href="/products?category=training-bras" 
+                className="text-gray-800 hover:text-pink-500 font-medium transition-colors text-sm"
+                data-testid="link-training-bras"
               >
-                GIRLS
+                Training Bras
               </Link>
               <Link 
-                href="/products?category=boys" 
-                className="text-gray-800 hover:text-pink-500 font-semibold transition-colors uppercase text-sm tracking-wide"
-                data-testid="link-boys"
+                href="/products?category=camisoles" 
+                className="text-gray-800 hover:text-pink-500 font-medium transition-colors text-sm"
+                data-testid="link-camisoles"
               >
-                BOYS
+                Camisoles
               </Link>
               <Link 
-                href="/products?category=accessories" 
-                className="text-gray-800 hover:text-pink-500 font-semibold transition-colors uppercase text-sm tracking-wide"
-                data-testid="link-accessories"
+                href="/products?category=underwear-packs" 
+                className="text-gray-800 hover:text-pink-500 font-medium transition-colors text-sm"
+                data-testid="link-underwear"
               >
-                ACCESSORIES
+                Underwear Packs
               </Link>
               <Link 
-                href="/products?category=new-arrivals" 
-                className="text-gray-800 hover:text-pink-500 font-semibold transition-colors uppercase text-sm tracking-wide"
-                data-testid="link-new-arrivals"
+                href="/products?category=night-suits" 
+                className="text-gray-800 hover:text-pink-500 font-medium transition-colors text-sm"
+                data-testid="link-nightwear"
               >
-                NEW ARRIVALS
+                Night Suits
+              </Link>
+              <Link 
+                href="/products?category=boxers" 
+                className="text-gray-800 hover:text-pink-500 font-medium transition-colors text-sm"
+                data-testid="link-boxers"
+              >
+                Boxers
               </Link>
             </nav>
 
@@ -128,17 +135,20 @@ export default function Header() {
             </div>
             <nav className="p-4">
               <div className="space-y-4">
-                <Link href="/products?category=girls" className="block py-2 text-gray-800 hover:text-pink-500 font-semibold">
-                  GIRLS
+                <Link href="/products?category=training-bras" className="block py-2 text-gray-800 hover:text-pink-500 font-medium">
+                  Training Bras
                 </Link>
-                <Link href="/products?category=boys" className="block py-2 text-gray-800 hover:text-pink-500 font-semibold">
-                  BOYS
+                <Link href="/products?category=camisoles" className="block py-2 text-gray-800 hover:text-pink-500 font-medium">
+                  Camisoles
                 </Link>
-                <Link href="/products?category=accessories" className="block py-2 text-gray-800 hover:text-pink-500 font-semibold">
-                  ACCESSORIES
+                <Link href="/products?category=underwear-packs" className="block py-2 text-gray-800 hover:text-pink-500 font-medium">
+                  Underwear Packs
                 </Link>
-                <Link href="/products?category=new-arrivals" className="block py-2 text-gray-800 hover:text-pink-500 font-semibold">
-                  NEW ARRIVALS
+                <Link href="/products?category=night-suits" className="block py-2 text-gray-800 hover:text-pink-500 font-medium">
+                  Night Suits
+                </Link>
+                <Link href="/products?category=boxers" className="block py-2 text-gray-800 hover:text-pink-500 font-medium">
+                  Boxers
                 </Link>
               </div>
             </nav>

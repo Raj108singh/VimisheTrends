@@ -36,10 +36,22 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
 }
 
 
+// Validate ../../app/about/page.tsx
+{
+  const handler = {} as typeof import("../../app/about/page.js")
+  handler satisfies AppPageConfig<"/about">
+}
+
 // Validate ../../app/cart/page.tsx
 {
   const handler = {} as typeof import("../../app/cart/page.js")
   handler satisfies AppPageConfig<"/cart">
+}
+
+// Validate ../../app/checkout/page.tsx
+{
+  const handler = {} as typeof import("../../app/checkout/page.js")
+  handler satisfies AppPageConfig<"/checkout">
 }
 
 // Validate ../../app/login/page.tsx
@@ -52,6 +64,12 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
 {
   const handler = {} as typeof import("../../app/page.js")
   handler satisfies AppPageConfig<"/">
+}
+
+// Validate ../../app/product/[id]/page.tsx
+{
+  const handler = {} as typeof import("../../app/product/[id]/page.js")
+  handler satisfies AppPageConfig<"/product/[id]">
 }
 
 // Validate ../../app/products/page.tsx

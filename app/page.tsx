@@ -15,23 +15,31 @@ export default function Home() {
     setIsClient(true);
   }, []);
 
-  // Sample slider data
+  // Hero slider data for kids innerwear
   const sliders = [
     {
       id: 1,
-      title: "Kids Fashion Collection",
-      description: "Comfortable & Stylish Kids Wear",
-      buttonText: "Shop Now",
-      linkUrl: "/products",
-      imageUrl: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+      title: "3-Pack Comfort Bras",
+      description: "Starting at ₹899 - Perfect for Growing Girls",
+      buttonText: "Shop Training Bras",
+      linkUrl: "/products?category=training-bras",
+      imageUrl: "/api/placeholder/800/600"
     },
     {
       id: 2,
-      title: "New Arrivals",
-      description: "Latest Trends for Growing Kids",
-      buttonText: "Explore",
-      linkUrl: "/products",
-      imageUrl: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+      title: "New Cartoon Prints",
+      description: "Fun Camisoles & Underwear Sets",
+      buttonText: "Explore Collection",
+      linkUrl: "/products?category=camisoles",
+      imageUrl: "/api/placeholder/800/600"
+    },
+    {
+      id: 3,
+      title: "Boys Comfort Wear",
+      description: "Soft Boxers & Night Suits",
+      buttonText: "Shop Boys",
+      linkUrl: "/products?category=boxers",
+      imageUrl: "/api/placeholder/800/600"
     }
   ];
 
@@ -151,100 +159,153 @@ export default function Home() {
       {/* Promotional Banner */}
       <section className="py-4 px-4 bg-white">
         <div className="container mx-auto">
-          <div className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl p-4">
+          <div className="bg-gradient-to-r from-pink-400 to-purple-400 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <span className="text-2xl">🎉</span>
+                <span className="text-2xl">🌟</span>
                 <div>
-                  <h2 className="text-xl font-bold text-white" data-testid="hero-title">GET 10% CASHBACK</h2>
-                  <p className="text-white opacity-90 text-sm" data-testid="hero-subtitle">ON ALL ORDERS</p>
+                  <h2 className="text-xl font-bold text-white" data-testid="hero-title">FREE SHIPPING</h2>
+                  <p className="text-white opacity-90 text-sm" data-testid="hero-subtitle">ON ORDERS ABOVE ₹599</p>
                 </div>
               </div>
-              <div className="bg-yellow-400 px-4 py-2 rounded-full">
-                <span className="font-bold text-gray-800 text-sm" data-testid="promo-code">USE CODE GETCASH10</span>
+              <div className="bg-white px-4 py-2 rounded-full">
+                <span className="font-bold text-pink-600 text-sm" data-testid="promo-code">COMFORT FIRST</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Banner Grid */}
+      {/* Featured Categories */}
       <section className="py-8 px-4 bg-white">
         <div className="container mx-auto">
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* Main Banner */}
-            <div className="md:col-span-2 relative bg-gradient-to-r from-purple-400 to-pink-400 rounded-2xl overflow-hidden h-64">
-              <div className="absolute inset-0 flex items-center justify-between p-8">
-                <div className="text-white">
-                  <h3 className="text-2xl font-bold mb-2" data-testid="text-casual-title">BUY 2</h3>
-                  <p className="text-4xl font-extrabold mb-2" data-testid="text-offer">KIDS T-SHIRTS</p>
-                  <p className="text-2xl font-bold mb-4" data-testid="text-price">AT ₹999</p>
-                  <Link href="/products">
-                    <Button className="bg-white text-purple-600 hover:bg-gray-100" data-testid="button-shop-casual">
-                      Shop Now
-                    </Button>
-                  </Link>
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Featured Categories</h2>
+            <p className="text-gray-600">Comfortable innerwear for growing kids</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Link href="/products?category=training-bras" className="group">
+              <div className="bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300">
+                <div className="w-16 h-16 bg-pink-300 rounded-full mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <span className="text-2xl">👙</span>
                 </div>
-                <div className="hidden md:block">
-                  <Image 
-                    src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200" 
-                    alt="Kids T-shirts" 
-                    width={300}
-                    height={200}
-                    className="rounded-lg" 
-                  />
+                <h3 className="font-semibold text-gray-800 mb-1">Training Bras</h3>
+                <p className="text-sm text-gray-600">Starting ₹899</p>
+              </div>
+            </Link>
+            <Link href="/products?category=camisoles" className="group">
+              <div className="bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300">
+                <div className="w-16 h-16 bg-purple-300 rounded-full mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <span className="text-2xl">👕</span>
                 </div>
+                <h3 className="font-semibold text-gray-800 mb-1">Camisoles</h3>
+                <p className="text-sm text-gray-600">Starting ₹649</p>
               </div>
-            </div>
-            
-            {/* Side Banner */}
-            <div className="relative bg-gradient-to-b from-blue-400 to-cyan-400 rounded-2xl overflow-hidden h-64">
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-6 text-center">
-                <h3 className="text-2xl font-bold mb-2" data-testid="text-formal-title">BUY 3</h3>
-                <p className="text-xl font-bold mb-2" data-testid="text-formal-subtitle">KIDS DRESSES</p>
-                <p className="text-2xl font-bold mb-4" data-testid="text-formal-price">AT ₹1499</p>
-                <Link href="/products">
-                  <Button className="bg-white text-blue-600 hover:bg-gray-100" data-testid="button-explore-formal">
-                    Explore
-                  </Button>
-                </Link>
+            </Link>
+            <Link href="/products?category=underwear-packs" className="group">
+              <div className="bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300">
+                <div className="w-16 h-16 bg-blue-300 rounded-full mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <span className="text-2xl">🩲</span>
+                </div>
+                <h3 className="font-semibold text-gray-800 mb-1">Underwear Packs</h3>
+                <p className="text-sm text-gray-600">Starting ₹799</p>
               </div>
-            </div>
+            </Link>
+            <Link href="/products?category=night-suits" className="group">
+              <div className="bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300">
+                <div className="w-16 h-16 bg-yellow-300 rounded-full mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <span className="text-2xl">🌙</span>
+                </div>
+                <h3 className="font-semibold text-gray-800 mb-1">Night Suits</h3>
+                <p className="text-sm text-gray-600">Starting ₹1299</p>
+              </div>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* New Arrivals Section */}
+      {/* Trending Bestsellers Section */}
       <section className="py-8 px-4 bg-gray-50">
         <div className="container mx-auto">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-2" data-testid="text-categories-title">NEW ARRIVALS</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2" data-testid="text-categories-title">Trending Bestsellers</h2>
+            <p className="text-gray-600">Most loved by our customers</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <Link key={i} href="/products" className="bg-white rounded-lg overflow-hidden group cursor-pointer hover:shadow-lg transition-all">
+            {[
+              { id: 1, name: "3-Pack Training Bras", price: 899, originalPrice: 1299, rating: 4.8, discount: 31, image: "/api/placeholder/300/400", pack: "3-Pack" },
+              { id: 2, name: "Cartoon Camisoles", price: 649, originalPrice: 899, rating: 4.6, discount: 28, image: "/api/placeholder/300/400", pack: "2-Pack" },
+              { id: 3, name: "Cotton Underwear Pack", price: 799, originalPrice: 1199, rating: 4.7, discount: 33, image: "/api/placeholder/300/400", pack: "5-Pack" },
+              { id: 4, name: "Cozy Night Suit", price: 1299, originalPrice: 1799, rating: 4.9, discount: 28, image: "/api/placeholder/300/400", pack: "1 Set" }
+            ].map((product) => (
+              <Link key={product.id} href={`/product/${product.id}`} className="bg-white rounded-2xl overflow-hidden group cursor-pointer hover:shadow-lg transition-all">
                 <div className="relative overflow-hidden">
                   <Image 
-                    src={`https://images.unsplash.com/photo-${1503454537195 + i}?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400`}
-                    alt="Kids Fashion" 
+                    src={product.image}
+                    alt={product.name} 
                     width={300}
                     height={400}
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute top-2 left-2">
-                    <span className="bg-yellow-400 text-xs font-bold px-2 py-1 rounded">4.5 ★</span>
+                    <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">{product.discount}% OFF</span>
+                  </div>
+                  <div className="absolute top-2 right-2">
+                    <span className="bg-yellow-400 text-xs font-bold px-2 py-1 rounded-full">{product.rating} ★</span>
                   </div>
                 </div>
-                <div className="p-3">
-                  <h3 className="font-semibold text-gray-800 mb-1">Kids Fashion Item</h3>
-                  <p className="text-sm text-gray-600 mb-2">Comfortable wear for kids</p>
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-lg text-primary">₹{299 + (i * 100)}</span>
-                    <Button size="sm" variant="outline">Add to Cart</Button>
+                <div className="p-4">
+                  <div className="mb-2">
+                    <span className="text-xs bg-pink-100 text-pink-600 px-2 py-1 rounded-full font-medium">{product.pack}</span>
                   </div>
+                  <h3 className="font-semibold text-gray-800 mb-1 text-sm">{product.name}</h3>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                      <span className="font-bold text-lg text-gray-900">₹{product.price}</span>
+                      <span className="text-sm text-gray-500 line-through">₹{product.originalPrice}</span>
+                    </div>
+                  </div>
+                  <Button size="sm" className="w-full bg-pink-500 hover:bg-pink-600 text-white">Add to Cart</Button>
                 </div>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Brand Story Section */}
+      <section className="py-12 px-4 bg-gradient-to-r from-pink-50 to-purple-50">
+        <div className="container mx-auto">
+          <div className="text-center max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-800 mb-6">Made with Love in India</h2>
+            <p className="text-lg text-gray-600 mb-8">
+              At Vimishe Fashion Trends, we believe every child deserves comfortable, high-quality innerwear. 
+              Our products are crafted by women-led manufacturing units across India, ensuring the softest fabrics 
+              and most comfortable fits for your growing children.
+            </p>
+            <div className="grid md:grid-cols-3 gap-8 mt-12">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-pink-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <span className="text-2xl">🇮🇳</span>
+                </div>
+                <h3 className="font-semibold text-gray-800 mb-2">Made in India</h3>
+                <p className="text-gray-600 text-sm">Supporting local manufacturing</p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-purple-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <span className="text-2xl">👩‍💼</span>
+                </div>
+                <h3 className="font-semibold text-gray-800 mb-2">Women-Led</h3>
+                <p className="text-gray-600 text-sm">Empowering women entrepreneurs</p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-blue-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <span className="text-2xl">🌟</span>
+                </div>
+                <h3 className="font-semibold text-gray-800 mb-2">Quality First</h3>
+                <p className="text-gray-600 text-sm">Premium materials & comfort</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
