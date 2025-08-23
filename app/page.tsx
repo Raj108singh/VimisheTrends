@@ -62,65 +62,111 @@ export default function HomePage() {
     <div className="min-h-screen bg-white">
       <Header />
       
-      {/* 3-Column Hero Slider Section */}
-      {sliders.length > 0 && (
-        <section className="relative w-full h-[400px] md:h-[500px]">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 h-full">
-            {sliders.slice(0, 3).map((slider, index) => (
+      {/* Single Column Hero Slider Section */}
+      <section className="relative w-full h-[300px] md:h-[500px] lg:h-[600px]">
+        <div className="relative h-full overflow-hidden">
+          {/* Slider Container */}
+          <div 
+            className="flex h-full transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {sliders.length > 0 ? (
+              sliders.map((slider, index) => (
+                <div
+                  key={slider.id}
+                  className="w-full h-full flex-shrink-0 relative cursor-pointer group"
+                  onClick={() => window.location.href = slider.linkUrl || "#"}
+                  style={{
+                    backgroundImage: slider.imageUrl ? `url(${slider.imageUrl})` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                >
+                  <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                    <div className="text-center text-white px-4 max-w-2xl">
+                      <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4" data-testid={`slider-title-${index}`}>
+                        {slider.title || `Fashion for Kids`}
+                      </h2>
+                      <p className="text-lg md:text-xl lg:text-2xl mb-6 opacity-90" data-testid={`slider-description-${index}`}>
+                        {slider.description || `Comfortable & Stylish Kids Wear`}
+                      </p>
+                      <Button 
+                        size="lg"
+                        className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-3 text-lg font-semibold"
+                        data-testid={`slider-button-${index}`}
+                      >
+                        {slider.buttonText || 'Shop Now'}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              /* Default slider when no sliders are available */
               <div
-                key={slider.id}
-                className={`relative w-full h-full cursor-pointer group ${
-                  index === 0 ? 'bg-gray-900' : 
-                  index === 1 ? 'bg-orange-500' : 
-                  'bg-gray-800'
-                }`}
-                onClick={() => window.location.href = slider.linkUrl || "#"}
+                className="w-full h-full flex-shrink-0 relative cursor-pointer group"
                 style={{
-                  backgroundImage: slider.imageUrl ? `url(${slider.imageUrl})` : 'none',
+                  backgroundImage: 'linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%)',
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}
               >
-                <div className={`absolute inset-0 ${
-                  index === 0 ? 'bg-gray-900 bg-opacity-80' :
-                  index === 1 ? 'bg-orange-500 bg-opacity-80' :
-                  'bg-gray-800 bg-opacity-80'
-                } group-hover:bg-opacity-70 transition-all duration-300 flex items-center justify-center`}>
-                  <div className="text-center text-white px-4">
-                    <h2 className={`font-bold mb-2 ${
-                      index === 1 ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'
-                    }`} data-testid={`slider-title-${index}`}>
-                      {index === 1 ? 'BUY 2' : slider.title}
+                <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                  <div className="text-center text-white px-4 max-w-2xl">
+                    <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4">
+                      Kids Fashion Collection
                     </h2>
-                    {index === 1 && (
-                      <h3 className="text-3xl md:text-4xl font-bold mb-2">
-                        OVERSIZED T-SHIRTS
-                      </h3>
-                    )}
-                    <p className={`mb-4 ${
-                      index === 1 ? 'text-xl md:text-2xl font-semibold' : 'text-sm md:text-base'
-                    }`} data-testid={`slider-description-${index}`}>
-                      {slider.description}
+                    <p className="text-lg md:text-xl lg:text-2xl mb-6 opacity-90">
+                      Comfortable & Stylish Wear for Growing Kids
                     </p>
-                    {slider.buttonText && (
-                      <Button 
-                        variant={index === 1 ? "secondary" : "outline"}
-                        className={`${
-                          index === 1 ? 'bg-white text-orange-500 hover:bg-gray-100' : 
-                          'border-white text-white hover:bg-white hover:text-gray-900'
-                        }`}
-                        data-testid={`slider-button-${index}`}
-                      >
-                        {slider.buttonText}
-                      </Button>
-                    )}
+                    <Button 
+                      size="lg"
+                      className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-3 text-lg font-semibold"
+                    >
+                      Shop Now
+                    </Button>
                   </div>
                 </div>
               </div>
-            ))}
+            )}
           </div>
-        </section>
-      )}
+
+          {/* Slider Navigation - Only show if multiple slides */}
+          {totalSlides > 1 && (
+            <>
+              {/* Prev/Next Buttons */}
+              <button
+                onClick={prevSlide}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-3 transition-all duration-200"
+                data-testid="button-prev-slide"
+              >
+                <i className="fas fa-chevron-left text-xl"></i>
+              </button>
+              <button
+                onClick={nextSlide}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-full p-3 transition-all duration-200"
+                data-testid="button-next-slide"
+              >
+                <i className="fas fa-chevron-right text-xl"></i>
+              </button>
+
+              {/* Slide Indicators */}
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                {Array.from({ length: totalSlides }).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                      index === currentSlide ? 'bg-white' : 'bg-white bg-opacity-50'
+                    }`}
+                    data-testid={`slider-indicator-${index}`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </section>
 
       {/* Promotional Banner */}
       <section className="py-4 px-4 bg-white">

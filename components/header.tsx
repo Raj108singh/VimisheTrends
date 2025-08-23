@@ -66,25 +66,32 @@ export default function Header() {
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-8">
               <Link 
-                href="/" 
-                className="text-gray-800 hover:text-black font-semibold transition-colors uppercase text-sm tracking-wide"
-                data-testid="link-men"
+                href="/products?category=girls" 
+                className="text-gray-800 hover:text-pink-500 font-semibold transition-colors uppercase text-sm tracking-wide"
+                data-testid="link-girls"
               >
-                MEN
+                GIRLS
               </Link>
               <Link 
-                href="/products" 
-                className="text-gray-800 hover:text-black font-semibold transition-colors uppercase text-sm tracking-wide"
-                data-testid="link-women"
+                href="/products?category=boys" 
+                className="text-gray-800 hover:text-pink-500 font-semibold transition-colors uppercase text-sm tracking-wide"
+                data-testid="link-boys"
               >
-                WOMEN
+                BOYS
               </Link>
               <Link 
-                href="/products" 
-                className="text-gray-800 hover:text-black font-semibold transition-colors uppercase text-sm tracking-wide"
-                data-testid="link-mobile-covers"
+                href="/products?category=accessories" 
+                className="text-gray-800 hover:text-pink-500 font-semibold transition-colors uppercase text-sm tracking-wide"
+                data-testid="link-accessories"
               >
-                MOBILE COVERS
+                ACCESSORIES
+              </Link>
+              <Link 
+                href="/products?category=new-arrivals" 
+                className="text-gray-800 hover:text-pink-500 font-semibold transition-colors uppercase text-sm tracking-wide"
+                data-testid="link-new-arrivals"
+              >
+                NEW ARRIVALS
               </Link>
             </nav>
 
@@ -173,30 +180,27 @@ export default function Header() {
           </div>
         </div>
         
-        {/* Secondary Navigation */}
-        <div className="bg-gray-50 border-b border-gray-200">
+        {/* Secondary Navigation - Hidden on Mobile */}
+        <div className="bg-gray-50 border-b border-gray-200 hidden lg:block">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-center space-x-8 py-3">
-              <Link href="/products" className="text-sm font-medium text-gray-700 hover:text-black transition-colors" data-testid="link-shop-now">
-                SHOP NOW
+              <Link href="/products?category=underwear" className="text-sm font-medium text-gray-700 hover:text-pink-500 transition-colors" data-testid="link-underwear">
+                UNDERWEAR
               </Link>
-              <Link href="/live" className="text-sm font-medium text-gray-700 hover:text-black transition-colors" data-testid="link-live-now">
-                LIVE NOW
+              <Link href="/products?category=casual-wear" className="text-sm font-medium text-gray-700 hover:text-pink-500 transition-colors" data-testid="link-casual-wear">
+                CASUAL WEAR
               </Link>
-              <Link href="/plus-size" className="text-sm font-medium text-gray-700 hover:text-black transition-colors" data-testid="link-plus-size">
-                PLUS SIZE
+              <Link href="/products?category=innerwear" className="text-sm font-medium text-gray-700 hover:text-pink-500 transition-colors" data-testid="link-innerwear">
+                INNERWEAR
               </Link>
-              <Link href="/bewakoof-air" className="text-sm font-medium text-gray-700 hover:text-black transition-colors" data-testid="link-bewakoof-air">
-                BWKF X GOOGLE AI
+              <Link href="/products?category=nightwear" className="text-sm font-medium text-gray-700 hover:text-pink-500 transition-colors" data-testid="link-nightwear">
+                NIGHTWEAR
               </Link>
-              <Link href="/accessories" className="text-sm font-medium text-gray-700 hover:text-black transition-colors" data-testid="link-accessories">
-                ACCESSORIES
+              <Link href="/products?sale=true" className="text-sm font-medium text-pink-600 hover:text-pink-700 transition-colors font-semibold" data-testid="link-sale">
+                SALE
               </Link>
-              <Link href="/official-merch" className="text-sm font-medium text-gray-700 hover:text-black transition-colors" data-testid="link-official-merch">
-                OFFICIAL MERCH
-              </Link>
-              <Link href="/sneakers" className="text-sm font-medium text-gray-700 hover:text-black transition-colors" data-testid="link-sneakers">
-                SNEAKERS
+              <Link href="/products?category=combo-packs" className="text-sm font-medium text-gray-700 hover:text-pink-500 transition-colors" data-testid="link-combo-packs">
+                COMBO PACKS
               </Link>
             </div>
           </div>

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Products() {
   const [filters, setFilters] = useState({
@@ -20,6 +21,8 @@ export default function Products() {
     isOnSale: false,
     page: 1,
   });
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const isMobile = useIsMobile();
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
@@ -60,21 +63,48 @@ export default function Products() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
+      <div className="container mx-auto px-4 py-4">
+        {/* Mobile Filter Toggle */}
+        {isMobile && (
+          <div className="flex items-center justify-between mb-4 bg-white p-4 rounded-lg shadow-sm">
+            <h1 className="text-xl font-bold text-gray-900">Products</h1>
+            <Button
+              variant="outline"
+              onClick={() => setShowMobileFilters(!showMobileFilters)}
+              className="flex items-center gap-2"
+              data-testid="button-toggle-filters"
+            >
+              <i className="fas fa-filter"></i>
+              Filters
+            </Button>
+          </div>
+        )}
+
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Filters Sidebar */}
-          <div className="lg:w-1/4">
-            <div className="bg-white p-6 rounded-xl shadow-md">
+          <div className={`lg:w-1/4 ${isMobile ? (showMobileFilters ? 'block' : 'hidden') : ''}`}>
+            <div className="bg-white p-4 lg:p-6 rounded-xl shadow-md">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold" data-testid="text-filters-title">Filters</h3>
-                <Button 
-                  variant="ghost" 
-                  onClick={clearFilters}
-                  className="text-sm text-primary"
-                  data-testid="button-clear-filters"
-                >
-                  Clear All
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    variant="ghost" 
+                    onClick={clearFilters}
+                    className="text-sm text-pink-600"
+                    data-testid="button-clear-filters"
+                  >
+                    Clear All
+                  </Button>
+                  {isMobile && (
+                    <Button
+                      variant="ghost"
+                      onClick={() => setShowMobileFilters(false)}
+                      className="lg:hidden"
+                    >
+                      <i className="fas fa-times"></i>
+                    </Button>
+                  )}
+                </div>
               </div>
 
               {/* Search */}
@@ -157,28 +187,28 @@ export default function Products() {
             </div>
 
             {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
-                    <div className="w-full h-64 bg-gray-200"></div>
-                    <div className="p-4">
-                      <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                      <div className="h-6 bg-gray-200 rounded mb-2"></div>
-                      <div className="h-8 bg-gray-200 rounded"></div>
+                    <div className="w-full h-32 md:h-64 bg-gray-200"></div>
+                    <div className="p-2 md:p-4">
+                      <div className="h-3 md:h-4 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-4 md:h-6 bg-gray-200 rounded mb-2"></div>
+                      <div className="h-6 md:h-8 bg-gray-200 rounded"></div>
                     </div>
                   </div>
                 ))}
               </div>
             ) : productsData?.products?.length > 0 ? (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 mb-8">
                   {productsData?.products?.map((product: any) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
                 </div>
 
                 {/* Pagination */}
-                {productsData.totalPages > 1 && (
+                {productsData?.totalPages && productsData.totalPages > 1 && (
                   <div className="flex justify-center items-center space-x-2">
                     <Button
                       variant="outline"
