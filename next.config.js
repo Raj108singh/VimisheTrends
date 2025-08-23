@@ -29,4 +29,4 @@ const nextConfig = {
   transpilePackages: ['@radix-ui/react-icons'],
 };
 
-module.exports = nextConfig;
+export default nextConfig;
