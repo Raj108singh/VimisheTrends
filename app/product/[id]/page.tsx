@@ -75,8 +75,8 @@ export default function ProductDetailPage() {
   ];
 
   const addToCart = () => {
-    // Cart logic would go here
-    alert('Added to cart!');
+    // Cart logic would go here - no login required
+    alert('Added to cart! Go to checkout to complete your purchase.');
   };
 
   return (
