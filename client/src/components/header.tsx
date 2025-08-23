@@ -63,25 +63,32 @@ export default function Header() {
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-8">
               <Link 
-                href="/" 
-                className="text-gray-800 hover:text-black font-semibold transition-colors uppercase text-sm tracking-wide"
-                data-testid="link-men"
+                href="/products?category=girls" 
+                className="text-gray-800 hover:text-pink-500 font-semibold transition-colors uppercase text-sm tracking-wide"
+                data-testid="link-girls"
               >
-                MEN
+                GIRLS
               </Link>
               <Link 
-                href="/products" 
-                className="text-gray-800 hover:text-black font-semibold transition-colors uppercase text-sm tracking-wide"
-                data-testid="link-women"
+                href="/products?category=boys" 
+                className="text-gray-800 hover:text-pink-500 font-semibold transition-colors uppercase text-sm tracking-wide"
+                data-testid="link-boys"
               >
-                WOMEN
+                BOYS
               </Link>
               <Link 
-                href="/products" 
-                className="text-gray-800 hover:text-black font-semibold transition-colors uppercase text-sm tracking-wide"
-                data-testid="link-mobile-covers"
+                href="/products?category=accessories" 
+                className="text-gray-800 hover:text-pink-500 font-semibold transition-colors uppercase text-sm tracking-wide"
+                data-testid="link-accessories"
               >
-                MOBILE COVERS
+                ACCESSORIES
+              </Link>
+              <Link 
+                href="/products?category=new-arrivals" 
+                className="text-gray-800 hover:text-pink-500 font-semibold transition-colors uppercase text-sm tracking-wide"
+                data-testid="link-new-arrivals"
+              >
+                NEW ARRIVALS
               </Link>
             </nav>
 
