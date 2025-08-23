@@ -37,6 +37,12 @@ export default function ProductDetail() {
     retry: false,
   });
 
+  const { data: relatedProducts = [] } = useQuery({
+    queryKey: ["/api/products", slug, "related"],
+    enabled: !!slug,
+    retry: false,
+  });
+
   const addToCartMutation = useMutation({
     mutationFn: async (cartData: any) => {
       const response = await apiRequest("POST", "/api/cart", cartData);
@@ -300,17 +306,32 @@ export default function ProductDetail() {
             {/* Size Selection */}
             {product.sizes && product.sizes.length > 0 && (
               <div className="mb-6">
-                <h4 className="font-semibold mb-2">Select Size/Age:</h4>
-                <Select value={selectedSize} onValueChange={setSelectedSize}>
-                  <SelectTrigger className="w-full" data-testid="select-size">
-                    <SelectValue placeholder="Choose size" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {product.sizes.map((size: string) => (
-                      <SelectItem key={size} value={size}>{size}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-semibold text-gray-800">Select Size</h4>
+                  <Button variant="link" className="text-sm text-blue-600 p-0 h-auto">
+                    Size Guide
+                  </Button>
+                </div>
+                <div className="grid grid-cols-4 gap-2">
+                  {product.sizes.map((size: string) => (
+                    <Button
+                      key={size}
+                      variant={selectedSize === size ? "default" : "outline"}
+                      className={`h-12 text-sm font-medium ${
+                        selectedSize === size 
+                          ? "bg-black text-white border-black" 
+                          : "bg-white text-gray-700 border-gray-300 hover:border-black"
+                      }`}
+                      onClick={() => setSelectedSize(size)}
+                      data-testid={`size-${size}`}
+                    >
+                      {size}
+                    </Button>
+                  ))}
+                </div>
+                {!selectedSize && (
+                  <p className="text-xs text-gray-500 mt-2">Please select a size</p>
+                )}
               </div>
             )}
 
@@ -359,21 +380,51 @@ export default function ProductDetail() {
             <div className="space-y-3 mb-6">
               <Button
                 onClick={handleAddToCart}
-                disabled={addToCartMutation.isPending}
-                className="w-full bg-primary text-white py-4 rounded-full font-semibold text-lg hover:bg-primary/90"
+                disabled={addToCartMutation.isPending || (!selectedSize && product.sizes?.length > 0)}
+                className="w-full bg-yellow-500 hover:bg-yellow-600 text-black py-4 rounded-lg font-semibold text-lg"
                 data-testid="button-add-to-cart"
               >
-                {addToCartMutation.isPending ? "Adding..." : "Add to Cart"}
+                🛍️ {addToCartMutation.isPending ? "Adding..." : "ADD TO BAG"}
               </Button>
               <Button
                 variant="outline"
                 onClick={handleAddToWishlist}
                 disabled={addToWishlistMutation.isPending}
-                className="w-full py-3 rounded-full font-medium"
+                className="w-full py-3 rounded-lg font-medium border-gray-300"
                 data-testid="button-add-to-wishlist"
               >
-                {addToWishlistMutation.isPending ? "Adding..." : "Add to Wishlist"}
+                ♡ {addToWishlistMutation.isPending ? "Adding..." : "WISHLIST"}
               </Button>
+            </div>
+
+            {/* Delivery & Offers Section */}
+            <div className="border-t pt-6 space-y-4">
+              {/* Delivery Details */}
+              <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
+                <div className="text-blue-600">📍</div>
+                <div>
+                  <p className="font-medium text-gray-800">Check for Delivery Details</p>
+                  <p className="text-sm text-gray-600">Enter pincode to check delivery time</p>
+                </div>
+              </div>
+              
+              {/* Free Shipping */}
+              <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
+                <div className="text-green-600">🚛</div>
+                <p className="text-sm font-medium text-green-700">This product is eligible for FREE SHIPPING</p>
+              </div>
+
+              {/* Offers */}
+              <div className="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg">
+                <h5 className="font-semibold text-gray-800 mb-2">Save extra with these offers</h5>
+                <div className="flex items-center space-x-2">
+                  <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">✓</span>
+                  <p className="text-sm text-gray-700">
+                    Get EXTRA 10% Cashback on all Products above Rs.499! Coupon code: 
+                    <span className="font-semibold text-green-700">NEWUSER10</span>
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Product Features */}
@@ -498,6 +549,47 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+
+      {/* Related Products Section */}
+      {relatedProducts && relatedProducts.length > 0 && (
+        <div className="container mx-auto px-4 py-12 border-t bg-white">
+          <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">You May Also Like</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {relatedProducts.map((relatedProduct: any) => (
+              <div key={relatedProduct.id} className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <Link href={`/product/${relatedProduct.slug}`}>
+                  <div className="aspect-square overflow-hidden bg-gray-100">
+                    <img 
+                      src={relatedProduct.imageUrl || "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400"}
+                      alt={relatedProduct.name}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                </Link>
+                <div className="p-4">
+                  <Link href={`/product/${relatedProduct.slug}`}>
+                    <h3 className="font-medium text-gray-800 text-sm line-clamp-2 hover:text-blue-600 transition-colors mb-2">
+                      {relatedProduct.name}
+                    </h3>
+                  </Link>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <span className="font-bold text-gray-900">₹{relatedProduct.salePrice || relatedProduct.price}</span>
+                      {relatedProduct.salePrice && (
+                        <span className="text-xs text-gray-500 line-through">₹{relatedProduct.price}</span>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <span className="text-yellow-400">⭐</span>
+                      <span className="text-xs text-gray-600">{relatedProduct.rating || "4.5"}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <Footer />
       <CartSidebar />

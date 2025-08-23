@@ -300,6 +300,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get related products by category
+  app.get("/api/products/:slug/related", async (req, res) => {
+    try {
+      const product = await storage.getProductBySlug(req.params.slug);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      
+      const relatedProducts = await storage.getRelatedProducts(product.id, product.categoryId, 8);
+      res.json(relatedProducts);
+    } catch (error) {
+      console.error("Error fetching related products:", error);
+      res.status(500).json({ message: "Failed to fetch related products" });
+    }
+  });
+
   app.post("/api/products", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;

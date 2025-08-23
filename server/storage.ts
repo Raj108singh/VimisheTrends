@@ -340,6 +340,21 @@ export class DatabaseStorage implements IStorage {
     await db.update(products).set({ isActive: false }).where(eq(products.id, id));
   }
 
+  async getRelatedProducts(excludeId: string, categoryId: string, limit: number = 8): Promise<Product[]> {
+    return await db
+      .select()
+      .from(products)
+      .where(
+        and(
+          eq(products.isActive, true),
+          eq(products.categoryId, categoryId),
+          not(eq(products.id, excludeId))
+        )
+      )
+      .limit(limit)
+      .orderBy(desc(products.rating));
+  }
+
   async getFeaturedProducts(limit = 8): Promise<Product[]> {
     return await db
       .select()
