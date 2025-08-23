@@ -6,14 +6,35 @@ import Link from 'next/link';
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/hooks/useCart";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isClient, setIsClient] = useState(false);
+  const [products, setProducts] = useState([]);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     setIsClient(true);
+    fetchProducts();
   }, []);
+  
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('/api/products');
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+  
+  const handleAddToCart = async (productId) => {
+    const success = await addToCart(productId, 1);
+    if (success) {
+      alert('Added to cart!');
+    }
+  };
 
   // Modern hero slider data based on ecommerce best practices
   const sliders = [
@@ -24,7 +45,7 @@ export default function Home() {
       description: "Starting ₹649",
       buttonText: "Shop Girls",
       linkUrl: "/products?category=girls",
-      image: "/attached_assets/generated_images/Colorful_kids_underwear_product_display_cd9656a4.png",
+      image: "https://images.unsplash.com/photo-1597588934839-8e20b9fa3607?w=800&h=600&fit=crop&auto=format",
       bgColor: "from-pink-400 to-purple-500"
     },
     {
@@ -34,7 +55,7 @@ export default function Home() {
       description: "Up to 50% OFF",
       buttonText: "Shop Casuals",
       linkUrl: "/products?category=casuals",
-      image: "/attached_assets/generated_images/Kids_casual_wear_flat_lay_f3430e7e.png",
+      image: "https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?w=800&h=600&fit=crop&auto=format",
       bgColor: "from-blue-400 to-indigo-500"
     },
     {
@@ -44,7 +65,7 @@ export default function Home() {
       description: "Free shipping ₹1000+",
       buttonText: "Shop Bundles",
       linkUrl: "/products?category=bundles",
-      image: "/attached_assets/generated_images/Kids_innerwear_bundle_packs_683b9bf7.png",
+      image: "https://images.unsplash.com/photo-1596783074918-c84cb06531ca?w=800&h=600&fit=crop&auto=format",
       bgColor: "from-green-400 to-teal-500"
     }
   ];

@@ -63,7 +63,7 @@ export default function Header() {
                   </svg>
                 </Link>
                 {/* Girls Mega Menu Panel */}
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-screen max-w-5xl bg-white shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 rounded-2xl overflow-hidden">
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-screen max-w-5xl bg-white shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] rounded-2xl overflow-hidden">
                   <div className="p-8">
                     <div className="grid grid-cols-4 gap-8">
                       {/* Column 1 */}
@@ -155,7 +155,7 @@ export default function Header() {
                   </svg>
                 </Link>
                 {/* Boys Mega Menu Panel */}
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-screen max-w-4xl bg-white shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 rounded-2xl overflow-hidden">
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-screen max-w-4xl bg-white shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] rounded-2xl overflow-hidden">
                   <div className="p-8">
                     <div className="grid grid-cols-3 gap-8">
                       {/* Column 1 */}
@@ -226,7 +226,7 @@ export default function Header() {
                   </svg>
                 </Link>
                 {/* Casuals Mega Menu Panel */}
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-screen max-w-3xl bg-white shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 rounded-2xl overflow-hidden">
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-screen max-w-3xl bg-white shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] rounded-2xl overflow-hidden">
                   <div className="p-8">
                     <div className="grid grid-cols-2 gap-8">
                       {/* Column 1 */}
@@ -311,12 +311,17 @@ export default function Header() {
                 <Link href="/login" className="text-sm font-semibold text-gray-800 hover:text-black uppercase tracking-wide" data-testid="button-account">
                   LOGIN
                 </Link>
+                <Link href="/admin" className="text-sm font-semibold text-gray-800 hover:text-black uppercase tracking-wide" data-testid="link-admin">
+                  ADMIN
+                </Link>
                 <Link href="/wishlist" className="hover:text-black transition-colors" data-testid="link-wishlist">
                   <i className="far fa-heart text-gray-700 text-xl"></i>
                 </Link>
                 <Link href="/cart" className="hover:text-black transition-colors relative" data-testid="link-cart">
-                  <i className="fas fa-shopping-bag text-gray-700 text-xl"></i>
-                  <Badge className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full min-w-[1.25rem] h-5 flex items-center justify-center p-0">
+                  <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                  <Badge className="absolute -top-2 -right-2 bg-pink-500 text-white text-xs rounded-full min-w-[1.25rem] h-5 flex items-center justify-center p-0">
                     0
                   </Badge>
                 </Link>
