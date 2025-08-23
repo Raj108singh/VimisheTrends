@@ -548,6 +548,31 @@ export default function ProductDetail() {
             )}
           </div>
         </div>
+
+        {/* Key Highlights Section */}
+        <div className="bg-white p-6 rounded-xl shadow-md mb-8">
+          <h3 className="text-xl font-bold mb-4">Key Highlights</h3>
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <h4 className="text-sm font-medium text-gray-500 mb-1">Design</h4>
+              <p className="text-gray-800 font-medium">Graphic Print</p>
+            </div>
+            <div>
+              <h4 className="text-sm font-medium text-gray-500 mb-1">Fit</h4>
+              <p className="text-gray-800 font-medium">Comfortable Fit</p>
+            </div>
+            {product.tags && product.tags.length > 0 && (
+              <div>
+                <h4 className="text-sm font-medium text-gray-500 mb-1">Category</h4>
+                <p className="text-gray-800 font-medium capitalize">{product.tags[0]}</p>
+              </div>
+            )}
+            <div>
+              <h4 className="text-sm font-medium text-gray-500 mb-1">Occasion</h4>
+              <p className="text-gray-800 font-medium">Casual Wear</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Related Products Section */}
