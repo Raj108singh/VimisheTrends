@@ -603,7 +603,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getActiveSliders(placement?: string): Promise<Slider[]> {
-    const now = new Date();
+    const now = new Date().toISOString();
     const conditions = [
       eq(sliders.isActive, true),
       or(sql`${sliders.startDate} IS NULL`, sql`${sliders.startDate} <= ${now}`),
