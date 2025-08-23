@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";

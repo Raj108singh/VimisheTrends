@@ -172,7 +172,7 @@ export default function Products() {
             ) : productsData?.products?.length > 0 ? (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                  {productsData.products.map((product: any) => (
+                  {productsData?.products?.map((product: any) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
                 </div>
@@ -190,7 +190,7 @@ export default function Products() {
                     </Button>
                     
                     <div className="flex space-x-1">
-                      {Array.from({ length: Math.min(5, productsData.totalPages) }, (_, i) => {
+                      {Array.from({ length: Math.min(5, productsData?.totalPages || 1) }, (_, i) => {
                         const page = i + 1;
                         return (
                           <Button
@@ -208,8 +208,8 @@ export default function Products() {
 
                     <Button
                       variant="outline"
-                      onClick={() => handleFilterChange("page", Math.min(productsData.totalPages, filters.page + 1))}
-                      disabled={filters.page === productsData.totalPages}
+                      onClick={() => handleFilterChange("page", Math.min(productsData?.totalPages || 1, filters.page + 1))}
+                      disabled={filters.page === (productsData?.totalPages || 1)}
                       data-testid="button-next-page"
                     >
                       Next

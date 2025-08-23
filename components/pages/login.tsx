@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link, useLocation } from "wouter";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -19,7 +20,7 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 export default function Login() {
-  const [, setLocation] = useLocation();
+  const router = useRouter();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -54,7 +55,7 @@ export default function Login() {
         title: "Success",
         description: "Logged in successfully!",
       });
-      setLocation("/");
+      router.push("/");
     },
     onError: (error: any) => {
       toast({

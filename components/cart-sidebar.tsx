@@ -4,17 +4,17 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest } from "@/lib/queryClient";
-import { useCartStore } from "@/store/cart";
+import { useCartStore } from "@/stores/store/cart";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useLocation } from "wouter";
+import { useRouter } from "next/navigation";
 
 export default function CartSidebar() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { isOpen, setOpen } = useCartStore();
-  const [, setLocation] = useLocation();
+  const router = useRouter();
 
   const { data: cartItems = [], isLoading } = useQuery<DBCartItem[]>({
     queryKey: ["/api/cart"],
@@ -87,12 +87,12 @@ export default function CartSidebar() {
 
   const handleViewCart = () => {
     setOpen(false);
-    setLocation("/cart");
+    router.push("/cart");
   };
 
   const handleCheckout = () => {
     setOpen(false);
-    setLocation("/checkout");
+    router.push("/checkout");
   };
 
   const subtotal = cartItems.reduce((total: number, item: any) => {

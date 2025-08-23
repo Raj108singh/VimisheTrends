@@ -1,26 +1,27 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
+import type { CartItem } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest } from "@/lib/queryClient";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { useLocation } from "wouter";
+import { useRouter } from "next/navigation";
 
 export default function Cart() {
   const { toast } = useToast();
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [, setLocation] = useLocation();
+  const router = useRouter();
 
-  const { data: cartItems = [], isLoading } = useQuery({
+  const { data: cartItems = [], isLoading } = useQuery<CartItem[]>({
     queryKey: ["/api/cart"],
     retry: false,
     enabled: !!user,
   });
 
-  const updateCartMutation = useMutation({
+  const updateCartMutation = useMutation<void, Error, { id: string; quantity: number }>({
     mutationFn: async ({ id, quantity }: { id: string; quantity: number }) => {
       await apiRequest("PUT", `/api/cart/${id}`, { quantity });
     },
@@ -123,7 +124,7 @@ export default function Cart() {
   };
 
   const handleCheckout = () => {
-    setLocation("/checkout");
+    router.push("/checkout");
   };
 
   const subtotal = cartItems.reduce((total: number, item: any) => {
@@ -197,7 +198,7 @@ export default function Cart() {
         {cartItems.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-gray-500 text-lg mb-4" data-testid="text-empty-cart">Your cart is empty</div>
-            <Button onClick={() => setLocation("/products")} data-testid="button-continue-shopping">
+            <Button onClick={() => router.push("/products")} data-testid="button-continue-shopping">
               Continue Shopping
             </Button>
           </div>
@@ -319,7 +320,7 @@ export default function Cart() {
               
               <Button 
                 variant="outline"
-                onClick={() => setLocation("/products")}
+                onClick={() => router.push("/products")}
                 className="w-full mt-3"
                 data-testid="button-continue-shopping-summary"
               >

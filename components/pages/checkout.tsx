@@ -3,8 +3,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
+import type { CartItem } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
-import { useLocation } from "wouter";
+import { useRouter } from "next/navigation";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -35,15 +36,15 @@ export default function Checkout() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [, setLocation] = useLocation();
+  const router = useRouter();
 
   // Redirect to auth if not logged in
   if (!user) {
-    setLocation("/auth");
+    router.push("/login");
     return null;
   }
 
-  const { data: cartItems = [], isLoading } = useQuery({
+  const { data: cartItems = [], isLoading } = useQuery<CartItem[]>({
     queryKey: ["/api/cart"],
     retry: false,
   });
@@ -73,7 +74,7 @@ export default function Checkout() {
         title: "Order Placed Successfully!",
         description: "Your order has been confirmed. You will receive an email confirmation shortly.",
       });
-      setLocation(`/profile?tab=orders`);
+      router.push(`/profile?tab=orders`);
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -105,7 +106,7 @@ export default function Checkout() {
       return;
     }
 
-    const orderItems = cartItems.map((item: any) => ({
+    const orderItems = (cartItems as CartItem[]).map((item: CartItem) => ({
       productId: item.productId,
       quantity: item.quantity,
       size: item.size,
@@ -172,7 +173,7 @@ export default function Checkout() {
     );
   }
 
-  const subtotal = cartItems.reduce((total: number, item: any) => {
+  const subtotal = (cartItems as CartItem[]).reduce((total: number, item: CartItem) => {
     return total + (parseFloat(item.product?.salePrice || item.product?.price || "0") * item.quantity);
   }, 0);
 
@@ -180,14 +181,14 @@ export default function Checkout() {
   const tax = subtotal * 0.18; // 18% GST
   const total = subtotal + shippingCost + tax;
 
-  if (cartItems.length === 0) {
+  if ((cartItems as CartItem[]).length === 0) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
         <div className="container mx-auto px-4 py-8 text-center">
           <h1 className="text-2xl font-bold text-gray-800 mb-4">Your cart is empty</h1>
           <p className="text-gray-600 mb-6">Add items to your cart to proceed with checkout</p>
-          <Button onClick={() => setLocation("/products")}>
+          <Button onClick={() => router.push("/products")}>
             Continue Shopping
           </Button>
         </div>
@@ -372,7 +373,7 @@ export default function Checkout() {
                 
                 {/* Order Items */}
                 <div className="space-y-4 mb-6">
-                  {cartItems.map((item: any) => (
+                  {(cartItems as CartItem[]).map((item: CartItem) => (
                     <div key={item.id} className="flex items-center space-x-4" data-testid={`order-item-${item.id}`}>
                       <img
                         src={item.product?.imageUrl || "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&h=80"}

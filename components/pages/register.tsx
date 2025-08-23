@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link, useLocation } from "wouter";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -27,7 +28,7 @@ const registerSchema = z.object({
 type RegisterForm = z.infer<typeof registerSchema>;
 
 export default function Register() {
-  const [, setLocation] = useLocation();
+  const router = useRouter();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -66,7 +67,7 @@ export default function Register() {
         title: "Success",
         description: "Account created successfully! Welcome!",
       });
-      setLocation("/");
+      router.push("/");
     },
     onError: (error: any) => {
       toast({
