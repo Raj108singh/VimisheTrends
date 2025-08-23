@@ -1,19 +1,22 @@
+"use client";
+
 import { useState } from "react";
-import { Link, useLocation } from "wouter";
-import { useAuth } from "@/hooks/useAuth";
-import { useCartStore } from "@/store/cart";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useAuth } from "../hooks/useAuth";
+import { useCartStore } from "../stores/stores/useCartStore";
 import { useQuery } from "@tanstack/react-query";
-import type { Category } from "@shared/schema";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { useIsMobile } from "@/hooks/use-mobile";
+import type { Category } from "../shared/schema";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Badge } from "./ui/badge";
+import { useIsMobile } from "../hooks/use-mobile";
 
 export default function Header() {
   const { user, isAuthenticated } = useAuth();
   const { toggleCart, getItemCount } = useCartStore();
   const isMobile = useIsMobile();
-  const [location] = useLocation();
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
