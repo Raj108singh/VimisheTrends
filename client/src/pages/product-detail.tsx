@@ -49,17 +49,6 @@ export default function ProductDetail() {
       return response.json();
     },
     onSuccess: (data: any) => {
-      if (data.requiresLogin) {
-        toast({
-          title: "Login Required",
-          description: data.message,
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/auth";
-        }, 1500);
-        return;
-      }
       queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
       toast({
         title: "Added to Cart",
@@ -276,7 +265,10 @@ export default function ProductDetail() {
 
           {/* Product Details */}
           <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-4" data-testid="text-product-name">{product.name}</h1>
+            <div className="mb-4">
+              <p className="text-sm text-gray-500 font-medium">Bewakoof®</p>
+              <h1 className="text-2xl font-bold text-gray-900" data-testid="text-product-name">{product.name}</h1>
+            </div>
             
             <div className="flex items-center mb-4">
               <div className="star-rating text-warning mr-2">
@@ -288,15 +280,16 @@ export default function ProductDetail() {
             </div>
 
             <div className="mb-6">
-              <div className="flex items-center space-x-2">
-                <span className="text-3xl font-bold text-primary" data-testid="text-price">₹{displayPrice}</span>
+              <div className="flex items-center space-x-3">
+                <span className="text-3xl font-bold text-gray-900" data-testid="text-price">₹{displayPrice}</span>
                 {originalPrice && (
                   <>
                     <span className="text-gray-500 line-through text-xl" data-testid="text-original-price">₹{originalPrice}</span>
-                    <Badge variant="destructive" data-testid="badge-discount">{discountPercent}% OFF</Badge>
+                    <span className="bg-green-600 text-white px-2 py-1 rounded text-sm font-bold" data-testid="badge-discount">{discountPercent}% OFF</span>
                   </>
                 )}
               </div>
+              <p className="text-sm text-gray-600 mt-2">Inclusive of all taxes</p>
             </div>
 
             {product.shortDescription && (
@@ -338,17 +331,24 @@ export default function ProductDetail() {
             {/* Color Selection */}
             {product.colors && product.colors.length > 0 && (
               <div className="mb-6">
-                <h4 className="font-semibold mb-2">Select Color:</h4>
-                <Select value={selectedColor} onValueChange={setSelectedColor}>
-                  <SelectTrigger className="w-full" data-testid="select-color">
-                    <SelectValue placeholder="Choose color" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {product.colors.map((color: string) => (
-                      <SelectItem key={color} value={color}>{color}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <h4 className="font-semibold text-gray-800 mb-3">Select Color</h4>
+                <div className="grid grid-cols-5 gap-2">
+                  {product.colors.map((color: string) => (
+                    <Button
+                      key={color}
+                      variant={selectedColor === color ? "default" : "outline"}
+                      className={`h-12 text-sm font-medium ${
+                        selectedColor === color 
+                          ? "bg-black text-white border-black" 
+                          : "bg-white text-gray-700 border-gray-300 hover:border-black"
+                      }`}
+                      onClick={() => setSelectedColor(color)}
+                      data-testid={`color-${color}`}
+                    >
+                      {color}
+                    </Button>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -398,31 +398,46 @@ export default function ProductDetail() {
             </div>
 
             {/* Delivery & Offers Section */}
-            <div className="border-t pt-6 space-y-4">
+            <div className="space-y-4 mt-6">
               {/* Delivery Details */}
-              <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
-                <div className="text-blue-600">📍</div>
-                <div>
-                  <p className="font-medium text-gray-800">Check for Delivery Details</p>
-                  <p className="text-sm text-gray-600">Enter pincode to check delivery time</p>
+              <div className="border border-gray-200 p-4 rounded-lg">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-blue-600">📍</span>
+                    <span className="font-medium text-gray-800">Check for Delivery Details</span>
+                  </div>
+                  <button className="text-blue-600 text-sm font-medium hover:underline">CHECK</button>
                 </div>
+                <input 
+                  type="text" 
+                  placeholder="Enter Pincode" 
+                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+                />
               </div>
               
               {/* Free Shipping */}
-              <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
-                <div className="text-green-600">🚛</div>
-                <p className="text-sm font-medium text-green-700">This product is eligible for FREE SHIPPING</p>
+              <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                <div className="flex items-center space-x-2">
+                  <span className="text-blue-600">🚛</span>
+                  <span className="text-sm font-medium text-blue-800">This product is eligible for FREE SHIPPING</span>
+                </div>
               </div>
 
               {/* Offers */}
-              <div className="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg">
-                <h5 className="font-semibold text-gray-800 mb-2">Save extra with these offers</h5>
-                <div className="flex items-center space-x-2">
-                  <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">✓</span>
-                  <p className="text-sm text-gray-700">
-                    Get EXTRA 10% Cashback on all Products above Rs.499! Coupon code: 
-                    <span className="font-semibold text-green-700">NEWUSER10</span>
-                  </p>
+              <div className="border border-green-200 bg-green-50 p-4 rounded-lg">
+                <h5 className="font-medium text-gray-800 mb-3">Save extra with these offers</h5>
+                <div className="space-y-2">
+                  <div className="flex items-start space-x-2">
+                    <span className="bg-green-600 text-white text-xs px-2 py-1 rounded mt-0.5">✓</span>
+                    <div>
+                      <p className="text-sm text-gray-700">
+                        Get EXTRA 10% Cashback on all Products above Rs.499!
+                      </p>
+                      <p className="text-xs text-green-700 font-medium mt-1">
+                        Coupon code: <span className="bg-green-600 text-white px-1 py-0.5 rounded">GETCASH10</span>
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -438,9 +453,9 @@ export default function ProductDetail() {
 
         {/* Product Description */}
         {product.description && (
-          <div className="bg-white p-6 rounded-xl shadow-md mb-8">
-            <h3 className="text-xl font-bold mb-4" data-testid="text-description-title">Product Description</h3>
-            <p className="text-gray-600 leading-relaxed" data-testid="text-full-description">{product.description}</p>
+          <div className="bg-white p-6 rounded-lg border border-gray-200 mb-8">
+            <h3 className="text-lg font-semibold mb-3 text-gray-800" data-testid="text-description-title">Product Details</h3>
+            <p className="text-gray-600 leading-relaxed text-sm" data-testid="text-full-description">{product.description}</p>
           </div>
         )}
 
@@ -550,26 +565,26 @@ export default function ProductDetail() {
         </div>
 
         {/* Key Highlights Section */}
-        <div className="bg-white p-6 rounded-xl shadow-md mb-8">
-          <h3 className="text-xl font-bold mb-4">Key Highlights</h3>
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <h4 className="text-sm font-medium text-gray-500 mb-1">Design</h4>
-              <p className="text-gray-800 font-medium">Graphic Print</p>
+        <div className="bg-white p-6 rounded-lg border border-gray-200 mb-8">
+          <h3 className="text-lg font-semibold mb-4 text-gray-800">Key Highlights</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-50 p-3 rounded">
+              <h4 className="text-xs font-medium text-gray-500 mb-1 uppercase">Design</h4>
+              <p className="text-gray-800 font-medium text-sm">Graphic Print</p>
             </div>
-            <div>
-              <h4 className="text-sm font-medium text-gray-500 mb-1">Fit</h4>
-              <p className="text-gray-800 font-medium">Comfortable Fit</p>
+            <div className="bg-gray-50 p-3 rounded">
+              <h4 className="text-xs font-medium text-gray-500 mb-1 uppercase">Fit</h4>
+              <p className="text-gray-800 font-medium text-sm">Comfortable Fit</p>
             </div>
             {product.tags && product.tags.length > 0 && (
-              <div>
-                <h4 className="text-sm font-medium text-gray-500 mb-1">Category</h4>
-                <p className="text-gray-800 font-medium capitalize">{product.tags[0]}</p>
+              <div className="bg-gray-50 p-3 rounded">
+                <h4 className="text-xs font-medium text-gray-500 mb-1 uppercase">Category</h4>
+                <p className="text-gray-800 font-medium text-sm capitalize">{product.tags[0]}</p>
               </div>
             )}
-            <div>
-              <h4 className="text-sm font-medium text-gray-500 mb-1">Occasion</h4>
-              <p className="text-gray-800 font-medium">Casual Wear</p>
+            <div className="bg-gray-50 p-3 rounded">
+              <h4 className="text-xs font-medium text-gray-500 mb-1 uppercase">Occasion</h4>
+              <p className="text-gray-800 font-medium text-sm">Casual Wear</p>
             </div>
           </div>
         </div>

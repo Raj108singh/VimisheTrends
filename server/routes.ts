@@ -383,15 +383,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/cart", async (req: any, res) => {
     try {
-      // Allow guest users to get a message to login, but don't block completely
-      if (!req.user) {
-        // For now, return a friendly message but don't add to cart
-        return res.status(200).json({ 
-          message: "Please login to add items to your cart",
-          requiresLogin: true 
-        });
+      // Allow guest users to add to cart with session-based storage
+      let userId = null;
+      
+      if (req.user) {
+        userId = req.user.claims ? req.user.claims.sub : req.user.id;
+      } else {
+        // Create or get guest session ID
+        if (!req.session.guestId) {
+          req.session.guestId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+        userId = req.session.guestId;
       }
-      const userId = req.user.claims ? req.user.claims.sub : req.user.id;
+      
       const cartItemData = insertCartItemSchema.parse({
         ...req.body,
         userId,

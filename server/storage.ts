@@ -43,7 +43,7 @@ import {
   type InsertAnalyticsEvent,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, asc, like, and, or, sql, inArray } from "drizzle-orm";
+import { eq, desc, asc, like, and, or, sql, inArray, not } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
