@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "wouter";
+import { useParams, Link } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -563,7 +563,7 @@ export default function ProductDetail() {
 
           {/* Reviews List */}
           <div className="space-y-4">
-            {reviews.length > 0 ? (
+            {reviews && reviews.length > 0 ? (
               reviews.map((review: any, index: number) => (
                 <div key={review.id} className="border-b pb-4" data-testid={`review-${index}`}>
                   <div className="flex items-center justify-between mb-2">
@@ -617,7 +617,7 @@ export default function ProductDetail() {
       </div>
 
       {/* Related Products Section */}
-      {relatedProducts && relatedProducts.length > 0 && (
+      {relatedProducts && Array.isArray(relatedProducts) && relatedProducts.length > 0 && (
         <div className="container mx-auto px-4 py-12 border-t bg-white">
           <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">You May Also Like</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
